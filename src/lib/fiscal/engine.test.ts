@@ -137,13 +137,22 @@ describe("télétravail aux frais réels", () => {
     internet: { montant: 480, usagePro: 50 },
   });
 
-  it("locataire, pièce dédiée : loyer et énergies au prorata de la surface", () => {
+  it("locataire, pièce dédiée : charges fixes au prorata de la surface, énergies surface × jours", () => {
     const d = fraisTeletravail(logement(), PARAMS_2026);
-    expect(d.depensesCommunes).toBe(12300);
+    expect(d.depensesFixes).toBe(9600 + 600 + 200);
+    expect(d.depensesEnergies).toBe(900 + 700 + 300);
     expect(d.ratioSurface).toBeCloseTo(1 / 7, 6);
-    expect(d.local).toBeCloseTo(12300 / 7, 2);
+    expect(d.ratioTemps).toBeCloseTo(0.4, 6);
+    expect(d.localFixes).toBeCloseTo(10400 / 7, 2);
+    expect(d.localEnergies).toBeCloseTo((1900 / 7) * 0.4, 2);
     expect(d.internet).toBe(240);
-    expect(d.total).toBeCloseTo(12300 / 7 + 240, 2);
+    expect(d.total).toBeCloseTo(10400 / 7 + (1900 / 7) * 0.4 + 240, 2);
+  });
+  it("plus de jours télétravaillés, plus d'énergies déduites", () => {
+    const peu = fraisTeletravail({ ...logement(), jours: 50 }, PARAMS_2026);
+    const beaucoup = fraisTeletravail({ ...logement(), jours: 200 }, PARAMS_2026);
+    expect(beaucoup.localEnergies).toBeCloseTo(peu.localEnergies * 4, 2);
+    expect(beaucoup.localFixes).toBeCloseTo(peu.localFixes, 2);
   });
   it("propriétaire : taxe foncière et copropriété au lieu du loyer", () => {
     const d = fraisTeletravail({ ...logement(), statut: "proprietaire" }, PARAMS_2026);

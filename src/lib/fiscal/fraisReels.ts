@@ -67,7 +67,17 @@ export interface DetailTeletravail {
   ratioSurface: number;
   /** Part d'utilisation professionnelle de la pièce si elle n'est pas dédiée. */
   ratioUsage: number;
+  /** Jours télétravaillés / 365 : part de l'année où l'énergie est consommée pour le travail. */
+  ratioTemps: number;
+  /** Quote-part appliquée aux charges fixes (loyer, charges, assurance…). */
+  quotePartFixes: number;
+  /** Quote-part appliquée aux énergies (électricité, chauffage, eau). */
+  quotePartEnergies: number;
   depensesCommunes: number;
+  depensesFixes: number;
+  depensesEnergies: number;
+  localFixes: number;
+  localEnergies: number;
   local: number;
   internet: number;
   equipements: { id: string; montant: number; amorti: boolean }[];
@@ -75,13 +85,24 @@ export interface DetailTeletravail {
   total: number;
 }
 
-/** Dépenses du logement retenues selon le statut : chacun ne déduit que ce qui lui incombe (§50). */
-export function depensesCommunes(t: Teletravail): number {
+/** Énergies : consommées pour le travail seulement les jours télétravaillés. */
+export const CLES_ENERGIES = ["electricite", "chauffage", "eau"] as const;
+
+export function depensesEnergies(t: Teletravail): number {
+  return CLES_ENERGIES.reduce((s, k) => s + pos(t.depenses[k]), 0);
+}
+
+/** Charges fixes retenues selon le statut : chacun ne déduit que ce qui lui incombe (§50). */
+export function depensesFixes(t: Teletravail): number {
   const d = t.depenses;
-  const communes = pos(d.electricite) + pos(d.chauffage) + pos(d.eau) + pos(d.assurance) + pos(d.entretien);
+  const communes = pos(d.assurance) + pos(d.entretien);
   return t.statut === "locataire"
     ? communes + pos(d.loyer) + pos(d.chargesLocatives)
     : communes + pos(d.taxeFonciere) + pos(d.chargesCopropriete);
+}
+
+export function depensesCommunes(t: Teletravail): number {
+  return depensesFixes(t) + depensesEnergies(t);
 }
 
 export function fraisTeletravail(t: Teletravail, p: ParamsFiscaux): DetailTeletravail {
@@ -98,16 +119,43 @@ export function fraisTeletravail(t: Teletravail, p: ParamsFiscaux): DetailTeletr
   // Prorata de surface (§90), limité à la moitié d'un studio (§40).
   const brut = t.surfaceLogement > 0 ? pos(t.surfaceBureau) / t.surfaceLogement : 0;
   const ratioSurface = Math.min(brut, t.studio ? tt.plafondSurfaceStudio : 1);
+  const ratioTemps = Math.min(1, pos(t.jours) / 365);
   // Pièce non exclusivement professionnelle (§100) : seule la part d'usage pro est retenue,
   // estimée par les jours télétravaillés sur l'année.
-  const ratioUsage = t.pieceDediee ? 1 : Math.min(1, pos(t.jours) / 365);
+  const ratioUsage = t.pieceDediee ? 1 : ratioTemps;
 
-  const communes = depensesCommunes(t);
-  const local = (communes * ratioSurface + pos(t.depensesBureau)) * ratioUsage;
+  // Charges fixes : une pièce dédiée l'est toute l'année (§30), prorata de surface seul.
+  // Énergies : consommées pour le travail les seuls jours télétravaillés, prorata de surface et de temps.
+  const quotePartFixes = ratioSurface * ratioUsage;
+  const quotePartEnergies = ratioSurface * ratioTemps;
+
+  const fixes = depensesFixes(t);
+  const energies = depensesEnergies(t);
+  const localFixes = fixes * quotePartFixes;
+  const localEnergies = energies * quotePartEnergies;
+  const local = localFixes + localEnergies + pos(t.depensesBureau) * ratioUsage;
   const internet = pos(t.internet.montant) * pct(t.internet.usagePro);
 
   const total = t.mode === "forfait" ? forfait + totalEquipements : local + internet + totalEquipements;
-  return { mode: t.mode, forfait, ratioSurface, ratioUsage, depensesCommunes: communes, local, internet, equipements, totalEquipements, total };
+  return {
+    mode: t.mode,
+    forfait,
+    ratioSurface,
+    ratioUsage,
+    ratioTemps,
+    quotePartFixes,
+    quotePartEnergies,
+    depensesCommunes: fixes + energies,
+    depensesFixes: fixes,
+    depensesEnergies: energies,
+    localFixes,
+    localEnergies,
+    local,
+    internet,
+    equipements,
+    totalEquipements,
+    total,
+  };
 }
 
 export interface DetailFraisReels {
