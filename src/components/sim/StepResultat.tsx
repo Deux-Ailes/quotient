@@ -1,6 +1,7 @@
 "use client";
 
-import { AlertTriangle, CalendarClock, Printer, RotateCcw, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Warning as AlertTriangle, CalendarBlank as CalendarClock, Printer, ArrowCounterClockwise as RotateCcw, Sparkle as Sparkles } from "@phosphor-icons/react/dist/ssr";
 import type { Resultat } from "@/lib/fiscal/engine";
 import { formatEur, formatNombre, formatPct } from "@/lib/format";
 import { AnimatedNumber, Card, Note, Pill } from "./ui";
@@ -47,7 +48,7 @@ function Bareme({ r }: { r: Resultat }) {
           return (
             <div key={s.taux} style={{ width: `${s.largeur}%` }}>
               <div className="h-3 overflow-hidden rounded-full bg-canvas ring-1 ring-line">
-                <div className="bg-brand-gradient h-full transition-all duration-500" style={{ width: `${rempli * 100}%`, opacity: 0.35 + s.taux * 1.4 }} />
+                <div className="h-full bg-brand transition-all duration-500" style={{ width: `${rempli * 100}%`, opacity: 0.35 + s.taux * 1.4 }} />
               </div>
               <p className={`mt-1.5 text-[11px] ${s.taux === r.tmi ? "font-semibold text-brand" : "text-ink-muted"}`}>{formatPct(s.taux)}</p>
             </div>
@@ -63,6 +64,7 @@ function Bareme({ r }: { r: Resultat }) {
 }
 
 export function StepResultat({ r, onReset }: { r: Resultat; onReset: () => void }) {
+  const [confirmer, setConfirmer] = useState(false);
   const restitution = r.impotNet < 0;
   const reels = r.adultes.filter((a) => a.salairesBruts > 0);
 
@@ -103,7 +105,7 @@ export function StepResultat({ r, onReset }: { r: Resultat; onReset: () => void 
   return (
     <div className="space-y-5">
       {/* Synthèse */}
-      <section className="bg-brand-gradient animate-fade-up relative overflow-hidden rounded-3xl p-6 text-white shadow-lift sm:p-8">
+      <section className="bg-brand-gradient relative overflow-hidden rounded-3xl p-6 text-white shadow-lift sm:p-8">
         <div className="absolute -top-20 -right-16 size-64 rounded-full bg-white/10 blur-2xl" />
         <div className="relative flex flex-wrap items-start justify-between gap-6">
           <div>
@@ -215,7 +217,7 @@ export function StepResultat({ r, onReset }: { r: Resultat; onReset: () => void 
             <p className="mt-1 text-sm text-ink-soft">Utile quand les revenus du couple sont déséquilibrés. Le total prélevé reste le même.</p>
             <div className="mt-3 flex flex-wrap gap-3">
               {r.pas.individualise.map((x) => (
-                <span key={x.prenom} className="tabular rounded-full bg-white px-3 py-1.5 text-sm font-semibold ring-1 ring-brand-100">
+                <span key={x.prenom} className="tabular rounded-full bg-surface px-3 py-1.5 text-sm font-semibold ring-1 ring-brand-100">
                   {x.prenom} : {formatPct(x.taux)}
                 </span>
               ))}
@@ -239,19 +241,38 @@ export function StepResultat({ r, onReset }: { r: Resultat; onReset: () => void 
         <button
           type="button"
           onClick={() => window.print()}
-          className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand"
+          className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-canvas transition hover:bg-brand hover:text-white"
         >
           <Printer className="size-4" /> Imprimer le récapitulatif
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            if (confirm("Effacer toutes les données saisies ?")) onReset();
-          }}
-          className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 text-sm font-semibold text-ink-soft transition hover:border-rose hover:text-rose"
-        >
-          <RotateCcw className="size-4" /> Nouvelle simulation
-        </button>
+        {confirmer ? (
+          <div role="alert" className="flex flex-wrap items-center gap-3 rounded-full border border-rose/40 bg-surface py-1.5 pr-1.5 pl-4 text-sm">
+            <span className="text-ink">Effacer toutes les données saisies ?</span>
+            <button
+              type="button"
+              onClick={onReset}
+              className="rounded-full bg-rose px-4 py-1.5 font-semibold text-white transition hover:opacity-90 active:scale-[0.98]"
+            >
+              Effacer
+            </button>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => setConfirmer(false)}
+              className="rounded-full px-3 py-1.5 font-semibold text-ink-soft transition hover:text-ink"
+            >
+              Annuler
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setConfirmer(true)}
+            className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-ink-soft transition hover:border-rose hover:text-rose active:scale-[0.98]"
+          >
+            <RotateCcw className="size-4" /> Nouvelle simulation
+          </button>
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { foyerParDefaut, teletravailVide } from "@/lib/fiscal/defaults";
+import { foyerExemple } from "@/lib/fiscal/exemple";
 import type { Foyer } from "@/lib/fiscal/types";
 
 const CLE = "quotient:brouillon:v1";
@@ -36,25 +37,34 @@ function lire(): Foyer | null {
   }
 }
 
-/** État du foyer avec brouillon conservé dans le navigateur. */
+/**
+ * État du foyer avec brouillon conservé dans le navigateur.
+ * Avec `?exemple` dans l'URL, charge le foyer de démonstration sans lire ni écrire le brouillon.
+ */
 export function useFoyer() {
   const [foyer, setFoyer] = useState<Foyer>(foyerParDefaut);
   const [charge, setCharge] = useState(false);
+  const [exemple, setExemple] = useState(false);
 
   useEffect(() => {
-    const f = lire();
-    if (f) setFoyer(f);
+    if (new URLSearchParams(window.location.search).has("exemple")) {
+      setExemple(true);
+      setFoyer(foyerExemple());
+    } else {
+      const f = lire();
+      if (f) setFoyer(f);
+    }
     setCharge(true);
   }, []);
 
   useEffect(() => {
-    if (!charge) return;
+    if (!charge || exemple) return;
     try {
       localStorage.setItem(CLE, JSON.stringify(foyer));
     } catch {
       /* stockage indisponible : on continue sans brouillon */
     }
-  }, [foyer, charge]);
+  }, [foyer, charge, exemple]);
 
   const maj: Maj = useCallback((recette) => {
     setFoyer((f) => {
@@ -70,8 +80,9 @@ export function useFoyer() {
     } catch {
       /* ignoré */
     }
+    setExemple(false);
     setFoyer(foyerParDefaut());
   }, []);
 
-  return { foyer, maj, reinitialiser, charge };
+  return { foyer, maj, reinitialiser, charge, exemple };
 }

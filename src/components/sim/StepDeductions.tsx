@@ -1,6 +1,6 @@
 "use client";
 
-import { Baby, Building, HandHeart, Home, PiggyBank, Plus, Trash2 } from "lucide-react";
+import { Baby, Building, HandHeart, House as Home, PiggyBank, Plus, Trash as Trash2 } from "@phosphor-icons/react/dist/ssr";
 import type { Resultat } from "@/lib/fiscal/engine";
 import { PARAMS } from "@/lib/fiscal/params";
 import type { Foyer, NiveauScolaire } from "@/lib/fiscal/types";

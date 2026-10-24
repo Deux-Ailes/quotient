@@ -1,12 +1,12 @@
 "use client";
 
-import { Laptop, Plus, Trash2 } from "lucide-react";
+import { Laptop, Plus, Trash as Trash2 } from "@phosphor-icons/react/dist/ssr";
 import { nouvelEquipement } from "@/lib/fiscal/defaults";
-import { fraisTeletravail } from "@/lib/fiscal/fraisReels";
+import { CLES_ENERGIES, fraisTeletravail } from "@/lib/fiscal/fraisReels";
 import type { ParamsFiscaux } from "@/lib/fiscal/params";
 import type { DepensesLogement, Teletravail } from "@/lib/fiscal/types";
 import { formatEur, formatEurCents, formatPct } from "@/lib/format";
-import { Card, Grid, Note, NumberField, Pill, Segmented, SelectField, Switch, TextField } from "./ui";
+import { Card, Collapsible, Grid, Note, NumberField, Pill, Segmented, SelectField, Switch, TextField } from "./ui";
 
 type ChampDepense = { cle: keyof DepensesLogement; label: string; hint?: string; statut?: Teletravail["statut"] };
 
@@ -40,7 +40,8 @@ export function CarteTeletravail({
   const autreMode = fraisTeletravail({ ...t, mode: t.mode === "forfait" ? "reel" : "forfait" }, p);
   const forfait = t.mode === "forfait" ? detail : autreMode;
   const reel = t.mode === "reel" ? detail : autreMode;
-  const quotePart = detail.ratioSurface * detail.ratioUsage;
+  const quotePartDe = (cle: keyof DepensesLogement) =>
+    (CLES_ENERGIES as readonly string[]).includes(cle) ? detail.quotePartEnergies : detail.quotePartFixes;
   const reelRenseigne = t.surfaceLogement > 0 || t.internet.montant > 0;
 
   return (
@@ -70,7 +71,7 @@ export function CarteTeletravail({
         {(
           [
             { mode: "forfait", titre: `Forfait ${formatEurCents(tt.parJour)}/jour`, montant: forfait.total, sous: `Plafond ${formatEurCents(tt.plafondAnnuel)}/an` },
-            { mode: "reel", titre: "Frais réels", montant: reel.total, sous: reelRenseigne ? `Quote-part ${formatPct(reel.ratioSurface * reel.ratioUsage)}` : "À renseigner ci-dessous" },
+            { mode: "reel", titre: "Frais réels", montant: reel.total, sous: reelRenseigne ? `Surface ${formatPct(reel.ratioSurface)}` : "À renseigner ci-dessous" },
           ] as const
         ).map((o) => {
           const actif = t.mode === o.mode;
@@ -81,7 +82,7 @@ export function CarteTeletravail({
               type="button"
               aria-pressed={actif}
               onClick={() => set((x) => void (x.mode = o.mode))}
-              className={`rounded-2xl p-4 text-left ring-1 transition ${actif ? "bg-brand-50 ring-brand" : "bg-white ring-line hover:ring-brand-100"}`}
+              className={`rounded-2xl p-4 text-left ring-1 transition ${actif ? "bg-brand-50 ring-brand" : "bg-surface ring-line hover:ring-brand-100"}`}
             >
               <span className="flex items-center justify-between gap-2">
                 <span className="text-sm font-semibold text-ink">{o.titre}</span>
@@ -95,10 +96,51 @@ export function CarteTeletravail({
       </div>
 
       {t.mode === "reel" && (
-        <div className="mt-6 space-y-6">
-          {/* Logement */}
+        <div className="mt-6 space-y-3">
+          {/* Récapitulatif, toujours visible au-dessus des sections repliables */}
+          <dl className="space-y-2 rounded-2xl bg-night p-4 text-sm text-white">
+            <div className="flex justify-between gap-4">
+              <dt className="text-white/65">
+                Loyer et charges : {formatEur(detail.depensesFixes)} × {formatPct(detail.quotePartFixes)}
+              </dt>
+              <dd className="tabular font-medium">{formatEur(detail.localFixes)}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-white/65">
+                Énergies : {formatEur(detail.depensesEnergies)} × {formatPct(detail.quotePartEnergies)}
+              </dt>
+              <dd className="tabular font-medium">{formatEur(detail.localEnergies)}</dd>
+            </div>
+            {t.depensesBureau > 0 && (
+              <div className="flex justify-between gap-4">
+                <dt className="text-white/65">Dépenses propres au bureau</dt>
+                <dd className="tabular font-medium">{formatEur(detail.local - detail.localFixes - detail.localEnergies)}</dd>
+              </div>
+            )}
+            <div className="flex justify-between gap-4">
+              <dt className="text-white/65">Internet et téléphone</dt>
+              <dd className="tabular font-medium">{formatEur(detail.internet)}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-white/65">Équipements</dt>
+              <dd className="tabular font-medium">{formatEur(detail.totalEquipements)}</dd>
+            </div>
+            <div className="flex justify-between gap-4 border-t border-white/10 pt-2 font-semibold">
+              <dt>Total télétravail</dt>
+              <dd className="tabular">{formatEur(detail.total)}</dd>
+            </div>
+          </dl>
+
+          {t.jours === 0 && (
+            <Note tone="warn">Indiquez vos jours de télétravail en haut de la carte : les énergies sont déduites au prorata de ces jours.</Note>
+          )}
+
+          <Collapsible
+            title="Logement"
+            subtitle={t.surfaceLogement > 0 ? `${t.statut === "locataire" ? "Locataire" : "Propriétaire"}, bureau de ${t.surfaceBureau} m² sur ${t.surfaceLogement} m²` : "Statut et surfaces"}
+            defaultOpen={t.surfaceLogement === 0}
+          >
           <div className="space-y-4">
-            <p className="text-sm font-semibold text-ink">Votre logement</p>
             <Segmented
               size="sm"
               value={t.statut}
@@ -128,28 +170,46 @@ export function CarteTeletravail({
             </div>
 
             {/* Quote-part */}
-            <div className="rounded-2xl bg-canvas/60 p-4 ring-1 ring-line">
-              <div className="flex items-baseline justify-between gap-3">
-                <p className="text-sm text-ink-soft">Quote-part professionnelle du logement</p>
-                <p className="tabular font-display text-2xl font-bold text-brand">{formatPct(quotePart)}</p>
-              </div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-line">
-                <div className="bg-brand-gradient h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(100, quotePart * 100)}%` }} />
-              </div>
-              <p className="tabular mt-2 text-xs text-ink-muted">
-                Surface {formatPct(detail.ratioSurface)}
-                {!t.pieceDediee && <> × usage {formatPct(detail.ratioUsage)}</>}
-                {t.studio && detail.ratioSurface === tt.plafondSurfaceStudio && " (limite studio)"}
-              </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                {
+                  titre: "Loyer et charges fixes",
+                  taux: detail.quotePartFixes,
+                  calcul: t.pieceDediee
+                    ? `Surface ${formatPct(detail.ratioSurface)} (pièce dédiée toute l'année)`
+                    : `Surface ${formatPct(detail.ratioSurface)} × ${t.jours} j / 365`,
+                },
+                {
+                  titre: "Énergies et eau",
+                  taux: detail.quotePartEnergies,
+                  calcul: `Surface ${formatPct(detail.ratioSurface)} × ${t.jours} j / 365`,
+                },
+              ].map((q) => (
+                <div key={q.titre} className="rounded-2xl bg-canvas/60 p-4 ring-1 ring-line">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="text-sm text-ink-soft">{q.titre}</p>
+                    <p className="tabular font-display text-2xl font-bold text-brand">{formatPct(q.taux)}</p>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-line">
+                    <div className="h-full rounded-full bg-brand transition-all duration-500" style={{ width: `${Math.min(100, q.taux * 100)}%` }} />
+                  </div>
+                  <p className="tabular mt-2 text-xs text-ink-muted">
+                    {q.calcul}
+                    {t.studio && detail.ratioSurface === tt.plafondSurfaceStudio && " · limite studio"}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
+          </Collapsible>
 
-          {/* Dépenses */}
+          <Collapsible
+            title="Dépenses annuelles du logement"
+            subtitle="Montants de tout le logement ; la quote-part est calculée automatiquement"
+            badge={detail.local > 0 ? <Pill>{formatEur(detail.local)}</Pill> : null}
+            defaultOpen={detail.depensesCommunes === 0}
+          >
           <div className="space-y-4">
-            <div>
-              <p className="text-sm font-semibold text-ink">Dépenses annuelles de tout le logement</p>
-              <p className="text-xs text-ink-muted">Montants payés dans l&apos;année ; la quote-part est calculée automatiquement.</p>
-            </div>
             <Grid>
               {DEPENSES.filter((c) => !c.statut || c.statut === t.statut).map((c) => (
                 <NumberField
@@ -160,7 +220,7 @@ export function CarteTeletravail({
                   hint={
                     t.depenses[c.cle] > 0 ? (
                       <>
-                        Déductible : <strong className="tabular text-ink-soft">{formatEur(t.depenses[c.cle] * quotePart)}</strong>
+                        Déductible : <strong className="tabular text-ink-soft">{formatEur(t.depenses[c.cle] * quotePartDe(c.cle))}</strong>
                       </>
                     ) : (
                       c.hint
@@ -182,10 +242,9 @@ export function CarteTeletravail({
               </Note>
             )}
           </div>
+          </Collapsible>
 
-          {/* Internet */}
-          <div className="space-y-4">
-            <p className="text-sm font-semibold text-ink">Internet et téléphone</p>
+          <Collapsible title="Internet et téléphone" badge={detail.internet > 0 ? <Pill>{formatEur(detail.internet)}</Pill> : null}>
             <Grid>
               <NumberField label="Abonnements annuels" value={t.internet.montant} onChange={(v) => set((x) => void (x.internet.montant = v))} />
               <NumberField
@@ -197,43 +256,20 @@ export function CarteTeletravail({
                 hint={t.internet.montant > 0 ? `Déductible : ${formatEur(detail.internet)}` : undefined}
               />
             </Grid>
-          </div>
-
-          {/* Récapitulatif */}
-          <dl className="space-y-2 rounded-2xl bg-ink p-4 text-sm text-white">
-            <div className="flex justify-between">
-              <dt className="text-white/60">
-                Logement : {formatEur(detail.depensesCommunes)} × {formatPct(quotePart)}
-                {t.depensesBureau > 0 && " + bureau"}
-              </dt>
-              <dd className="tabular font-medium">{formatEur(detail.local)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-white/60">Internet et téléphone</dt>
-              <dd className="tabular font-medium">{formatEur(detail.internet)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-white/60">Équipements</dt>
-              <dd className="tabular font-medium">{formatEur(detail.totalEquipements)}</dd>
-            </div>
-            <div className="flex justify-between border-t border-white/10 pt-2 font-semibold">
-              <dt>Total télétravail</dt>
-              <dd className="tabular">{formatEur(detail.total)}</dd>
-            </div>
-          </dl>
+          </Collapsible>
         </div>
       )}
 
       {/* Équipements */}
-      <div className="mt-6 space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold text-ink">Mobilier et matériel de télétravail</p>
-            <p className="text-xs text-ink-muted">
-              Déduits l&apos;année d&apos;achat jusqu&apos;à {p.fraisReels.seuilAmortissementMateriel} € HT, sinon amortis ({p.fraisReels.dureeAmortissementMateriel} ans
-              pour l&apos;informatique, {p.fraisReels.dureeAmortissementMobilier} ans pour le mobilier).
-            </p>
-          </div>
+      <div className="mt-3">
+      <Collapsible
+        title="Mobilier et matériel de télétravail"
+        subtitle={`Déduits jusqu'à ${p.fraisReels.seuilAmortissementMateriel} € HT, sinon amortis (${p.fraisReels.dureeAmortissementMateriel} ans informatique, ${p.fraisReels.dureeAmortissementMobilier} ans mobilier)`}
+        badge={detail.totalEquipements > 0 ? <Pill>{formatEur(detail.totalEquipements)}</Pill> : null}
+        defaultOpen={t.equipements.length > 0}
+      >
+      <div className="space-y-3">
+        <div className="flex justify-end">
           <button
             type="button"
             onClick={() => set((x) => void x.equipements.push(nouvelEquipement()))}
@@ -280,6 +316,8 @@ export function CarteTeletravail({
             </div>
           );
         })}
+      </div>
+      </Collapsible>
       </div>
 
       <p className="mt-5 text-xs leading-relaxed text-ink-muted">

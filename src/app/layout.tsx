@@ -14,7 +14,7 @@ const display = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "Quotient — Simulateur d'impôt sur le revenu",
+  title: "Quotient | Simulateur d'impôt sur le revenu",
   description:
     "Estimez votre impôt sur le revenu en quelques minutes : quotient familial, frais réels (kilomètres, repas, télétravail), réductions et crédits d'impôt, taux de prélèvement à la source.",
 };

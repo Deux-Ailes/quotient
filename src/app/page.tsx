@@ -3,65 +3,58 @@ import {
   ArrowRight,
   Baby,
   Car,
+  CaretDown,
+  ChartLine,
   Check,
-  ChevronDown,
+  ForkKnife,
   HandHeart,
-  Home,
+  House,
   Laptop,
-  Lock,
+  LockSimple,
   PiggyBank,
   Receipt,
-  Scale,
-  Sparkles,
-  UtensilsCrossed,
+  Scales,
+  Sparkle,
   Users,
   Wallet,
-} from "lucide-react";
+} from "@phosphor-icons/react/dist/ssr";
 import { SiteFooter, SiteHeader } from "@/components/SiteHeader";
-import { foyerParDefaut, nouveauVehicule } from "@/lib/fiscal/defaults";
 import { simuler } from "@/lib/fiscal/engine";
+import { foyerExemple } from "@/lib/fiscal/exemple";
 import { PARAMS, ANNEE_DEFAUT } from "@/lib/fiscal/params";
-import { formatEur, formatPct } from "@/lib/format";
+import { formatEur, formatNombre, formatPct } from "@/lib/format";
 
-/** Foyer d'exemple affiché dans le hero : calculé avec le vrai moteur. */
+const CTA = "Lancer ma simulation";
+
+/** Foyer d'exemple affiché sur la page : calculé avec le vrai moteur. */
 function exemple() {
-  const f = foyerParDefaut();
-  f.adultes[0].prenom = "Camille";
-  f.adultes[0].salaires = 42000;
-  f.adultes[0].frais.vehicules = [{ ...nouveauVehicule(), distanceAller: 32, joursParAn: 170 }];
-  f.adultes[0].frais.teletravail.jours = 45;
-  f.adultes[0].frais.repas = { jours: 170, prixMoyen: 13, participationEmployeur: 0 };
-  f.adultes[1].prenom = "Alex";
-  f.adultes[1].salaires = 31000;
-  f.enfants[0].age = 3;
-  f.enfants[0].fraisGarde = 4200;
+  const f = foyerExemple();
   const avecReels = simuler(f);
   const sansReels = simuler({ ...f, adultes: [{ ...f.adultes[0], modeFrais: "forfait" }, f.adultes[1]] });
   return { r: avecReels, economie: sansReels.impotNet - avecReels.impotNet };
 }
 
+const POINTS = ["Quotient familial plafonné", "Barème kilométrique officiel", "Comparatif 10 % / frais réels", "Taux de prélèvement à la source"];
+
 const ETAPES = [
   { titre: "Votre foyer", texte: "Situation, enfants, garde alternée : le nombre de parts est calculé pour vous." },
   { titre: "Vos revenus et frais", texte: "Salaires, pensions, loyers, placements. Kilomètres, repas et télétravail en quelques champs." },
-  { titre: "Votre estimation", texte: "Impôt net, détail du calcul, taux de prélèvement à la source et option la plus avantageuse." },
+  { titre: "Votre estimation", texte: "Impôt net, détail du calcul, taux de prélèvement et option la plus avantageuse." },
 ];
 
-const COUVERTURE = [
-  { icon: Users, titre: "Quotient familial", texte: "Parts, garde alternée, parent isolé, invalidité et plafonnement." },
-  { icon: Car, titre: "Frais kilométriques", texte: "Barème officiel voitures, motos, cyclomoteurs, +20 % électrique, plafond 40 km." },
-  { icon: Laptop, titre: "Télétravail", texte: "Forfait par jour plafonné ou frais réels : quote-part de loyer, énergie, internet." },
-  { icon: UtensilsCrossed, titre: "Repas", texte: "Coût du repas moins la valeur forfaitaire et la part des titres-restaurant." },
-  { icon: Home, titre: "Revenus fonciers", texte: "Micro-foncier avec abattement de 30 % ou régime réel avec déficit imputable." },
-  { icon: Wallet, titre: "Placements et micro", texte: "Flat tax ou barème, dividendes, micro-BIC, micro-BNC, meublés." },
-  { icon: Baby, titre: "Garde et scolarité", texte: "Crédit de 50 % pour les moins de 6 ans, réductions collège, lycée, études." },
-  { icon: HandHeart, titre: "Dons et emploi à domicile", texte: "Dons à 66 % et 75 %, services à la personne, plafonds majorés." },
-  { icon: PiggyBank, titre: "PER et pensions", texte: "Versements PER déductibles, pensions alimentaires, EHPAD, Pinel, Denormandie." },
+const AUTRES = [
+  { icon: ForkKnife, titre: "Repas", texte: "Prix du repas moins la valeur forfaitaire et la part des titres-restaurant." },
+  { icon: House, titre: "Revenus fonciers", texte: "Micro-foncier à 30 % ou régime réel avec déficit imputable." },
+  { icon: Wallet, titre: "Placements et micro", texte: "Flat tax ou barème, micro-BIC, micro-BNC, meublés." },
+  { icon: Baby, titre: "Garde et scolarité", texte: "Crédit de 50 % avant 6 ans, réductions collège, lycée, études." },
+  { icon: HandHeart, titre: "Dons et emploi à domicile", texte: "Dons à 75 % et 66 %, services à la personne." },
+  { icon: PiggyBank, titre: "PER, pensions, EHPAD", texte: "Épargne retraite, pensions alimentaires, Pinel, Denormandie." },
 ];
 
 const FAQ = [
   {
     q: "Le résultat est-il fiable ?",
-    r: "Quotient applique le barème, la décote, le plafonnement du quotient familial et les principaux dispositifs. Pour les situations courantes, l'écart avec le simulateur officiel est faible. Certaines situations rares (revenus exceptionnels, quotient, contribution différentielle sur les hauts revenus) ne sont pas modélisées.",
+    r: "Quotient applique le barème, la décote, le plafonnement du quotient familial et les principaux dispositifs. Pour les situations courantes, l'écart avec le simulateur officiel est faible. Certaines situations rares (revenus exceptionnels, contribution différentielle sur les hauts revenus) ne sont pas modélisées.",
   },
   {
     q: "Pourquoi le barème est-il marqué « provisoire » ?",
@@ -73,7 +66,7 @@ const FAQ = [
   },
   {
     q: "Mes données sont-elles envoyées quelque part ?",
-    r: "Non. Aucun compte, aucun serveur : la simulation tourne entièrement dans votre navigateur. Un brouillon est conservé localement sur votre appareil pour reprendre plus tard, et vous pouvez l'effacer à tout moment.",
+    r: "Non. Aucun compte, aucun serveur : la simulation tourne entièrement dans votre navigateur. Un brouillon est conservé localement sur votre appareil, et vous pouvez l'effacer à tout moment.",
   },
   {
     q: "Comment est calculé le taux de prélèvement à la source ?",
@@ -81,190 +74,259 @@ const FAQ = [
   },
 ];
 
+function BoutonPrincipal({ className = "" }: { className?: string }) {
+  return (
+    <Link
+      href="/simulateur"
+      className={`bg-brand-gradient group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-base font-semibold whitespace-nowrap text-white shadow-lift transition hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${className}`}
+    >
+      {CTA}
+      <ArrowRight className="size-5 transition group-hover:translate-x-1" weight="bold" />
+    </Link>
+  );
+}
+
 export default function LandingPage() {
   const { r, economie } = exemple();
   const params = PARAMS[ANNEE_DEFAUT];
+  const camille = r.adultes[0];
+  const fr = camille.fraisReels;
+  const kmMax = Math.max(fr.total, camille.abattementForfaitaire);
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader cta={CTA} />
       <main>
         {/* Hero */}
         <section className="bg-mesh relative overflow-hidden">
-          <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-16 pb-24 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:pt-24">
+          <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:pt-20">
             <div className="animate-fade-up">
-              <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/70 px-3 py-1 text-xs font-semibold text-brand">
-                <Sparkles className="size-3.5" />
+              <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-surface/70 px-3 py-1 text-xs font-semibold text-brand">
+                <Sparkle className="size-3.5" weight="fill" />
                 {params.libelle}
-                {params.provisoire && <span className="text-ink-muted">· barème PLF 2027</span>}
+                {params.provisoire && <span className="font-medium text-ink-muted">· barème provisoire</span>}
               </span>
-              <h1 className="mt-6 font-display text-5xl leading-[1.02] font-bold tracking-tight text-ink sm:text-6xl">
-                Votre impôt, <span className="text-gradient">enfin lisible.</span>
+              <h1 className="mt-6 font-display text-5xl leading-[1.04] font-bold tracking-tight text-ink sm:text-6xl">
+                Votre impôt, <span className="text-brand">enfin lisible.</span>
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
-                Estimez votre impôt sur le revenu en cinq minutes. Frais kilométriques, télétravail, repas, garde
-                d&apos;enfants : Quotient recense les déductions auxquelles vous avez droit et retient l&apos;option la plus
+              <p className="mt-6 max-w-lg text-lg leading-relaxed text-ink-soft">
+                Estimez votre impôt en cinq minutes. Kilomètres, télétravail, garde d&apos;enfants : Quotient retient l&apos;option la plus
                 avantageuse.
               </p>
-              <div className="mt-9 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/simulateur"
-                  className="bg-brand-gradient group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-base font-semibold text-white shadow-lift transition hover:-translate-y-0.5"
-                >
-                  Lancer ma simulation
-                  <ArrowRight className="size-5 transition group-hover:translate-x-1" />
+              <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+                <BoutonPrincipal />
+                <Link href="/simulateur?exemple" className="inline-flex items-center gap-1.5 font-semibold text-ink-soft transition hover:text-brand">
+                  Voir un exemple <ArrowRight className="size-4" />
                 </Link>
-                <span className="inline-flex items-center gap-2 text-sm text-ink-soft">
-                  <Lock className="size-4 text-mint" />
-                  Gratuit, sans compte, 100 % local
-                </span>
               </div>
-              <ul className="mt-10 grid max-w-lg grid-cols-2 gap-3 text-sm text-ink-soft">
-                {["Quotient familial plafonné", "Barème kilométrique officiel", "Comparatif 10 % / frais réels", "Taux de prélèvement à la source"].map(
-                  (t) => (
-                    <li key={t} className="flex items-center gap-2">
-                      <span className="grid size-5 place-items-center rounded-full bg-mint-50 text-mint">
-                        <Check className="size-3.5" strokeWidth={3} />
-                      </span>
-                      {t}
-                    </li>
-                  ),
-                )}
-              </ul>
             </div>
 
             {/* Carte d'exemple */}
-            <div className="relative mx-auto w-full max-w-md lg:mx-0 lg:justify-self-end">
-              <div className="bg-brand-gradient absolute -inset-6 -z-10 rounded-[2.5rem] opacity-20 blur-3xl" />
-              <div className="animate-float rounded-3xl border border-white/70 bg-white/90 p-6 shadow-lift backdrop-blur">
+            <div className="animate-fade-up relative mx-auto w-full max-w-md [animation-delay:120ms] lg:mx-0 lg:justify-self-end">
+              <div className="rounded-3xl border border-line bg-surface p-6 shadow-lift">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">Exemple</p>
+                    <p className="text-xs font-semibold text-ink-muted">Exemple</p>
                     <p className="font-semibold">Couple marié, 1 enfant</p>
                   </div>
-                  <span className="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand">{r.parts.total} parts</span>
+                  <span className="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand">{formatNombre(r.parts.total)} parts</span>
                 </div>
-                <div className="mt-6 rounded-2xl bg-ink p-5 text-white">
-                  <p className="text-sm text-white/60">Impôt estimé</p>
+                <div className="mt-6 rounded-2xl bg-night p-5 text-white">
+                  <p className="text-sm text-white/65">Impôt estimé</p>
                   <p className="tabular mt-1 font-display text-4xl font-bold">{formatEur(r.impotNet)}</p>
                   <div className="mt-4 flex gap-6 text-sm">
-                    <div>
-                      <p className="text-white/50">Taux moyen</p>
-                      <p className="tabular font-semibold">{formatPct(r.tauxMoyen)}</p>
-                    </div>
-                    <div>
-                      <p className="text-white/50">TMI</p>
-                      <p className="tabular font-semibold">{formatPct(r.tmi)}</p>
-                    </div>
-                    <div>
-                      <p className="text-white/50">Taux PAS</p>
-                      <p className="tabular font-semibold">{formatPct(r.pas.tauxFoyer)}</p>
-                    </div>
+                    {[
+                      { l: "Taux moyen", v: formatPct(r.tauxMoyen) },
+                      { l: "TMI", v: formatPct(r.tmi) },
+                      { l: "Taux PAS", v: formatPct(r.pas.tauxFoyer) },
+                    ].map((x) => (
+                      <div key={x.l}>
+                        <p className="text-white/60">{x.l}</p>
+                        <p className="tabular font-semibold">{x.v}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <ul className="mt-5 space-y-3 text-sm">
                   <li className="flex justify-between">
                     <span className="text-ink-soft">Salaires déclarés</span>
-                    <span className="tabular font-medium">{formatEur(73000)}</span>
+                    <span className="tabular font-medium">{formatEur(camille.salairesBruts + r.adultes[1].salairesBruts)}</span>
                   </li>
                   <li className="flex justify-between">
                     <span className="text-ink-soft">Frais réels de Camille</span>
-                    <span className="tabular font-medium">− {formatEur(r.adultes[0].deductionRetenue)}</span>
+                    <span className="tabular font-medium">− {formatEur(camille.deductionRetenue)}</span>
                   </li>
                   <li className="flex justify-between">
                     <span className="text-ink-soft">Crédit garde d&apos;enfant</span>
                     <span className="tabular font-medium">− {formatEur(r.credits.gardeEnfant)}</span>
                   </li>
                 </ul>
-                <div className="mt-5 flex items-center gap-3 rounded-2xl bg-mint-50 px-4 py-3 text-sm">
-                  <Sparkles className="size-5 shrink-0 text-mint" />
-                  <span>
-                    Les frais réels font économiser <strong className="tabular text-mint">{formatEur(economie)}</strong> par
-                    rapport à l&apos;abattement de 10 %.
-                  </span>
-                </div>
+                <p className="mt-5 rounded-2xl bg-mint-50 px-4 py-3 text-sm text-ink">
+                  Les frais réels font économiser <strong className="tabular text-mint">{formatEur(economie)}</strong> par rapport à
+                  l&apos;abattement de 10 %.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Fonctionnement */}
-        <section id="fonctionnement" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold text-brand">Fonctionnement</p>
-            <h2 className="mt-2 font-display text-4xl font-bold tracking-tight">Trois étapes, aucune notice à lire.</h2>
-            <p className="mt-4 text-lg text-ink-soft">
-              Le simulateur ne vous montre que les champs utiles à votre situation, et l&apos;estimation se met à jour à chaque
-              saisie.
-            </p>
-          </div>
-          <ol className="mt-12 grid gap-5 md:grid-cols-3">
+        {/* Points clés, sortis du hero */}
+        <section className="border-y border-line bg-surface">
+          <ul className="mx-auto flex max-w-6xl flex-col gap-x-8 gap-y-3 px-4 py-6 text-sm text-ink-soft sm:flex-row sm:flex-wrap sm:px-6">
+            {POINTS.map((t) => (
+              <li key={t} className="flex items-center gap-2 whitespace-nowrap">
+                <Check className="size-4 shrink-0 text-mint" weight="bold" />
+                {t}
+              </li>
+            ))}
+            <li className="flex items-center gap-2 whitespace-nowrap xl:ml-auto">
+              <LockSimple className="size-4 shrink-0 text-brand" weight="bold" />
+              Gratuit, sans compte, 100 % local
+            </li>
+          </ul>
+        </section>
+
+        {/* Fonctionnement : frise */}
+        <section id="fonctionnement" className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-24 pb-16 sm:px-6">
+          <h2 className="max-w-xl font-display text-4xl font-bold tracking-tight">Trois étapes, aucune notice à lire.</h2>
+          <ol className="relative mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
+            <span aria-hidden className="absolute top-5 right-[16%] left-[4%] hidden h-px bg-line md:block" />
             {ETAPES.map((e, i) => (
-              <li key={e.titre} className="relative rounded-3xl border border-line bg-white p-7 shadow-card">
-                <span className="bg-brand-gradient grid size-10 place-items-center rounded-2xl font-display text-lg font-bold text-white">
+              <li key={e.titre} className="relative">
+                <span className="relative grid size-10 place-items-center rounded-full border border-brand-100 bg-surface font-display text-lg font-bold text-brand">
                   {i + 1}
                 </span>
                 <h3 className="mt-5 text-lg font-semibold">{e.titre}</h3>
-                <p className="mt-2 text-ink-soft">{e.texte}</p>
+                <p className="mt-2 max-w-xs text-ink-soft">{e.texte}</p>
               </li>
             ))}
           </ol>
         </section>
 
-        {/* Couverture */}
-        <section id="couverture" className="scroll-mt-20 bg-white py-24">
+        {/* Capture réelle du simulateur */}
+        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+          <figure className="overflow-hidden rounded-3xl border border-line bg-surface shadow-lift">
+            <div className="flex items-center gap-1.5 border-b border-line px-4 py-3">
+              <span className="size-2.5 rounded-full bg-line" />
+              <span className="size-2.5 rounded-full bg-line" />
+              <span className="size-2.5 rounded-full bg-line" />
+            </div>
+            <picture>
+              <source srcSet="/apercu-frais-reels-sombre.png" media="(prefers-color-scheme: dark)" />
+              <img
+                src="/apercu-frais-reels.png"
+                alt="Étape Frais réels du simulateur : comparaison entre l'abattement de 10 % et les frais réels de Camille, avec l'impôt estimé en direct."
+                width={2560}
+                height={1720}
+                loading="lazy"
+                className="block aspect-[16/9] w-full object-cover object-top"
+              />
+            </picture>
+          </figure>
+          <figcaption className="mt-4 text-center text-sm text-ink-muted">
+            L&apos;étape Frais réels, avec le foyer d&apos;exemple.{" "}
+            <Link href="/simulateur?exemple&etape=3" className="font-semibold text-brand hover:underline">
+              L&apos;ouvrir
+            </Link>
+          </figcaption>
+        </section>
+
+        {/* Couverture : grille asymétrique */}
+        <section id="couverture" className="scroll-mt-20 border-y border-line bg-surface py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div className="max-w-2xl">
-                <p className="text-sm font-semibold text-brand">Ce qui est calculé</p>
-                <h2 className="mt-2 font-display text-4xl font-bold tracking-tight">Les dispositifs qui changent vraiment la note.</h2>
-              </div>
-              <Link href="/simulateur" className="inline-flex items-center gap-1.5 font-semibold text-brand hover:gap-2.5 transition-all">
-                Essayer maintenant <ArrowRight className="size-4" />
-              </Link>
-            </div>
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {COUVERTURE.map(({ icon: Icon, titre, texte }) => (
-                <div
-                  key={titre}
-                  className="group rounded-3xl border border-line bg-canvas/50 p-6 transition hover:-translate-y-1 hover:border-brand-100 hover:bg-white hover:shadow-lift"
-                >
-                  <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand transition group-hover:bg-brand group-hover:text-white">
-                    <Icon className="size-5" />
-                  </span>
-                  <h3 className="mt-4 font-semibold">{titre}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">{texte}</p>
+            <h2 className="max-w-2xl font-display text-4xl font-bold tracking-tight">Les dispositifs qui changent vraiment la note.</h2>
+
+            <div className="mt-12 grid gap-4 lg:grid-cols-6">
+              {/* Frais kilométriques */}
+              <article className="rounded-3xl bg-brand-50 p-7 lg:col-span-3 lg:row-span-2">
+                <Car className="size-7 text-brand" />
+                <h3 className="mt-4 text-xl font-semibold">Frais kilométriques</h3>
+                <p className="mt-2 max-w-md text-ink-soft">
+                  Barème officiel voitures, motos et cyclomoteurs, +20 % pour l&apos;électrique, plafond de 40 km par trajet.
+                </p>
+                <div className="mt-8 space-y-4">
+                  <p className="text-sm text-ink-soft">Camille, 32 km de trajet, 170 jours, 5 CV :</p>
+                  {[
+                    { l: "Abattement de 10 %", v: camille.abattementForfaitaire, fort: false },
+                    { l: "Frais réels", v: fr.total, fort: true },
+                  ].map((b) => (
+                    <div key={b.l}>
+                      <div className="flex justify-between text-sm">
+                        <span className={b.fort ? "font-semibold" : "text-ink-soft"}>{b.l}</span>
+                        <span className="tabular font-semibold">{formatEur(b.v)}</span>
+                      </div>
+                      <div className={`mt-1.5 h-2.5 rounded-full ${b.fort ? "bg-brand" : "bg-brand-100"}`} style={{ width: `${(b.v / kmMax) * 100}%` }} />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </article>
+
+              {/* Télétravail */}
+              <article className="rounded-3xl border border-line p-7 lg:col-span-3">
+                <div className="flex items-start justify-between gap-6">
+                  <div>
+                    <Laptop className="size-7 text-brand" />
+                    <h3 className="mt-4 text-xl font-semibold">Télétravail</h3>
+                    <p className="mt-2 max-w-sm text-ink-soft">Forfait journalier, ou loyer et énergies au prorata de la surface du bureau et des jours télétravaillés.</p>
+                  </div>
+                  <p className="shrink-0 text-right">
+                    <span className="tabular block font-display text-4xl font-bold text-brand">{formatPct(10 / 70)}</span>
+                    <span className="text-xs text-ink-muted">10 m² sur 70 m²</span>
+                  </p>
+                </div>
+              </article>
+
+              {/* Quotient familial */}
+              <article className="rounded-3xl border border-line p-7 lg:col-span-3">
+                <div className="flex items-start justify-between gap-6">
+                  <div>
+                    <Users className="size-7 text-brand" />
+                    <h3 className="mt-4 text-xl font-semibold">Quotient familial</h3>
+                    <p className="mt-2 max-w-sm text-ink-soft">Parts, garde alternée, parent isolé, invalidité, avec le plafonnement de l&apos;avantage.</p>
+                  </div>
+                  <p className="shrink-0 text-right">
+                    <span className="tabular block font-display text-4xl font-bold text-brand">{formatNombre(r.parts.total)}</span>
+                    <span className="text-xs text-ink-muted">parts dans l&apos;exemple</span>
+                  </p>
+                </div>
+              </article>
             </div>
+
+            <ul className="mt-10 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+              {AUTRES.map(({ icon: Icon, titre, texte }) => (
+                <li key={titre} className="flex gap-4">
+                  <Icon className="mt-0.5 size-6 shrink-0 text-brand" />
+                  <div>
+                    <p className="font-semibold">{titre}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-ink-soft">{texte}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
-        {/* Frais réels */}
+        {/* Frais réels : le seul bloc sombre de la page */}
         <section id="frais-reels" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
-          <div className="grid items-center gap-12 overflow-hidden rounded-[2rem] bg-ink p-8 text-white sm:p-12 lg:grid-cols-2">
+          <div className="grid items-center gap-12 overflow-hidden rounded-3xl bg-night p-8 text-white sm:p-12 lg:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold text-violet">Frais réels</p>
-              <h2 className="mt-2 font-display text-4xl font-bold tracking-tight">
-                L&apos;abattement de 10 % n&apos;est pas toujours votre meilleur ami.
-              </h2>
-              <p className="mt-5 text-lg leading-relaxed text-white/70">
-                Au-delà de 30 km de trajet quotidien, les frais réels deviennent souvent plus intéressants. Quotient calcule
-                vos frais kilométriques avec le barème officiel, ajoute repas, télétravail, matériel et formation, puis compare
-                automatiquement.
+              <h2 className="font-display text-4xl font-bold tracking-tight">L&apos;abattement de 10 % n&apos;est pas toujours votre meilleur ami.</h2>
+              <p className="mt-5 text-lg leading-relaxed text-white/75">
+                Au-delà de 30 km de trajet quotidien, les frais réels deviennent souvent plus intéressants. Quotient les calcule et compare
+                pour chaque déclarant.
               </p>
               <Link
                 href="/simulateur"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-ink transition hover:bg-brand-50"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-night transition hover:bg-brand-100 active:scale-[0.98]"
               >
-                Calculer mes frais réels <ArrowRight className="size-4" />
+                {CTA} <ArrowRight className="size-4" weight="bold" />
               </Link>
             </div>
             <div className="space-y-3">
               {[
-                { icon: Car, label: "Trajets domicile-travail", detail: "32 km × 2 × 170 jours, 5 CV", v: r.adultes[0].fraisReels.vehicules[0]?.montant ?? 0 },
-                { icon: UtensilsCrossed, label: "Repas", detail: "170 repas à 13 €", v: r.adultes[0].fraisReels.repas },
-                { icon: Laptop, label: "Télétravail", detail: "45 jours au forfait", v: r.adultes[0].fraisReels.teletravail },
+                { icon: Car, label: "Trajets domicile-travail", detail: "32 km × 2 × 170 jours, 5 CV", v: fr.vehicules[0]?.montant ?? 0 },
+                { icon: ForkKnife, label: "Repas", detail: "170 repas à 13 €", v: fr.repas },
+                { icon: Laptop, label: "Télétravail", detail: "45 jours au forfait", v: fr.teletravail },
               ].map(({ icon: Icon, label, detail, v }) => (
                 <div key={label} className="flex items-center gap-4 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
                   <span className="grid size-10 place-items-center rounded-xl bg-white/10">
@@ -272,35 +334,34 @@ export default function LandingPage() {
                   </span>
                   <div className="flex-1">
                     <p className="font-medium">{label}</p>
-                    <p className="text-sm text-white/50">{detail}</p>
+                    <p className="text-sm text-white/60">{detail}</p>
                   </div>
                   <p className="tabular font-semibold">{formatEur(v)}</p>
                 </div>
               ))}
-              <div className="flex items-center justify-between rounded-2xl bg-white p-4 text-ink">
+              <div className="flex items-center justify-between rounded-2xl bg-white p-4 text-night">
                 <div className="flex items-center gap-3">
-                  <Scale className="size-5 text-brand" />
+                  <Scales className="size-5 text-[#5b47ff]" />
                   <span className="font-medium">Frais réels vs 10 %</span>
                 </div>
                 <p className="tabular font-semibold">
-                  {formatEur(r.adultes[0].fraisReels.total)} <span className="text-ink-muted">vs</span>{" "}
-                  {formatEur(r.adultes[0].abattementForfaitaire)}
+                  {formatEur(fr.total)} <span className="text-[#63668a]">vs</span> {formatEur(camille.abattementForfaitaire)}
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Confidentialité */}
+        {/* Engagements */}
         <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-x-12 gap-y-8 md:grid-cols-3">
             {[
-              { icon: Lock, t: "Rien ne quitte votre appareil", d: "Pas de compte, pas de serveur, pas de traceur publicitaire." },
+              { icon: LockSimple, t: "Rien ne quitte votre appareil", d: "Pas de compte, pas de serveur, pas de traceur publicitaire." },
               { icon: Receipt, t: "Calcul détaillé", d: "Chaque étape est affichée : revenu imposable, parts, décote, réductions." },
-              { icon: Scale, t: "Sources officielles", d: "Barèmes issus de la loi de finances, du BOFiP et de Service-Public." },
+              { icon: ChartLine, t: "Sources officielles", d: "Barèmes issus de la loi de finances, du BOFiP et de Service-Public." },
             ].map(({ icon: Icon, t, d }) => (
-              <div key={t} className="flex gap-4 rounded-3xl border border-line bg-white p-6 shadow-card">
-                <Icon className="size-6 shrink-0 text-brand" />
+              <div key={t} className="flex gap-4">
+                <Icon className="mt-0.5 size-6 shrink-0 text-brand" />
                 <div>
                   <p className="font-semibold">{t}</p>
                   <p className="mt-1 text-sm text-ink-soft">{d}</p>
@@ -311,16 +372,15 @@ export default function LandingPage() {
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="scroll-mt-20 bg-white py-24">
+        <section id="faq" className="scroll-mt-20 border-y border-line bg-surface py-24">
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
-            <p className="text-sm font-semibold text-brand">FAQ</p>
-            <h2 className="mt-2 font-display text-4xl font-bold tracking-tight">Questions fréquentes</h2>
+            <h2 className="font-display text-4xl font-bold tracking-tight">Questions fréquentes</h2>
             <div className="mt-10 divide-y divide-line rounded-3xl border border-line">
               {FAQ.map(({ q, r }) => (
                 <details key={q} className="group px-6 py-5 [&_summary::-webkit-details-marker]:hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
                     {q}
-                    <ChevronDown className="size-5 shrink-0 text-ink-muted transition group-open:rotate-180" />
+                    <CaretDown className="size-5 shrink-0 text-ink-muted transition group-open:rotate-180" />
                   </summary>
                   <p className="mt-3 leading-relaxed text-ink-soft">{r}</p>
                 </details>
@@ -329,19 +389,13 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-          <div className="bg-brand-gradient relative overflow-hidden rounded-[2rem] px-8 py-16 text-center text-white sm:px-16">
-            <div className="absolute -top-24 -right-24 size-72 rounded-full bg-white/10 blur-2xl" />
-            <h2 className="relative font-display text-4xl font-bold tracking-tight sm:text-5xl">Prêt à connaître votre chiffre ?</h2>
-            <p className="relative mx-auto mt-4 max-w-xl text-lg text-white/80">Cinq minutes, aucune inscription. Votre brouillon reste sur votre appareil.</p>
-            <Link
-              href="/simulateur"
-              className="relative mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-semibold text-ink transition hover:-translate-y-0.5"
-            >
-              Lancer ma simulation <ArrowRight className="size-5" />
-            </Link>
+        {/* Appel final, sans bandeau en dégradé */}
+        <section className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-20 sm:px-6 md:flex-row md:items-center">
+          <div>
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Prêt à connaître votre chiffre ?</h2>
+            <p className="mt-2 text-ink-soft">Cinq minutes, aucune inscription. Votre brouillon reste sur votre appareil.</p>
           </div>
+          <BoutonPrincipal />
         </section>
       </main>
       <SiteFooter />

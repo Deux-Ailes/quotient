@@ -1,6 +1,6 @@
 "use client";
 
-import { Baby, Heart, Plus, Trash2, User } from "lucide-react";
+import { Baby, Heart, Plus, Trash as Trash2, User } from "@phosphor-icons/react/dist/ssr";
 import { nouvelEnfant } from "@/lib/fiscal/defaults";
 import type { Foyer } from "@/lib/fiscal/types";
 import type { Maj } from "./useFoyer";

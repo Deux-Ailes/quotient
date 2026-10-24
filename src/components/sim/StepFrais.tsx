@@ -1,6 +1,6 @@
 "use client";
 
-import { Car, GraduationCap, Plus, Scale, Trash2, UtensilsCrossed, Wrench } from "lucide-react";
+import { Car, GraduationCap, Plus, Scales as Scale, Trash as Trash2, ForkKnife as UtensilsCrossed, Wrench } from "@phosphor-icons/react/dist/ssr";
 import { nouveauVehicule } from "@/lib/fiscal/defaults";
 import type { Resultat } from "@/lib/fiscal/engine";
 import { PARAMS } from "@/lib/fiscal/params";
@@ -44,7 +44,7 @@ export function StepFrais({
       <AdultTabs foyer={foyer} actif={actif} onChange={setActif} />
 
       {/* Comparatif */}
-      <section className="animate-fade-up overflow-hidden rounded-3xl bg-ink p-5 text-white shadow-lift sm:p-7">
+      <section className="overflow-hidden rounded-3xl bg-night p-5 text-white shadow-lift sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="grid size-10 place-items-center rounded-2xl bg-white/10">
@@ -71,7 +71,7 @@ export function StepFrais({
             const retenu = r.modeRetenu === m;
             const montant = m === "forfait" ? r.abattementForfaitaire : r.fraisReels.total;
             return (
-              <div key={m} className={`rounded-2xl p-4 transition ${retenu ? "bg-white text-ink" : "bg-white/5 ring-1 ring-white/10"}`}>
+              <div key={m} className={`rounded-2xl p-4 transition ${retenu ? "bg-surface text-ink" : "bg-white/5 ring-1 ring-white/10"}`}>
                 <div className="flex items-center justify-between gap-2">
                   <p className={`text-sm ${retenu ? "text-ink-soft" : "text-white/60"}`}>{m === "forfait" ? "Abattement 10 %" : "Frais réels"}</p>
                   {retenu && <Pill tone="mint">retenu</Pill>}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Briefcase, Building2, LineChart } from "lucide-react";
+import { Briefcase, Buildings as Building2, ChartLine as LineChart } from "@phosphor-icons/react/dist/ssr";
 import { PARAMS } from "@/lib/fiscal/params";
 import type { Foyer, TypeMicro } from "@/lib/fiscal/types";
 import { formatEur, formatPct } from "@/lib/format";

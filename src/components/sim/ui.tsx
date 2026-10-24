@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { ChevronDown, Info } from "lucide-react";
+import { CaretDown as ChevronDown, Info } from "@phosphor-icons/react/dist/ssr";
 
 /* ---------- Champs ---------- */
 
@@ -38,7 +38,7 @@ export function NumberField({ label, value, onChange, suffix = "€", hint, min 
             const n = parseFloat(e.target.value);
             onChange(Number.isFinite(n) ? n : 0);
           }}
-          className="tabular h-11 w-full rounded-xl border border-line bg-white px-3.5 pr-12 text-[15px] text-ink transition outline-none placeholder:text-ink-muted/70 hover:border-brand-100 focus:border-brand focus:ring-4 focus:ring-brand/10"
+          className="tabular h-11 w-full rounded-xl border border-line bg-surface px-3.5 pr-12 text-[15px] text-ink transition outline-none placeholder:text-ink-muted/70 hover:border-brand-100 focus:border-brand focus:ring-4 focus:ring-brand/10"
         />
         {suffix && (
           <span className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-ink-muted">{suffix}</span>
@@ -60,7 +60,7 @@ export function TextField({ label, value, onChange }: { label: string; value: st
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] outline-none transition hover:border-brand-100 focus:border-brand focus:ring-4 focus:ring-brand/10"
+        className="h-11 w-full rounded-xl border border-line bg-surface px-3.5 text-[15px] outline-none transition hover:border-brand-100 focus:border-brand focus:ring-4 focus:ring-brand/10"
       />
     </div>
   );
@@ -90,7 +90,7 @@ export function SelectField<T extends string>({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value as T)}
-          className="h-11 w-full appearance-none rounded-xl border border-line bg-white px-3.5 pr-10 text-[15px] outline-none transition hover:border-brand-100 focus:border-brand focus:ring-4 focus:ring-brand/10"
+          className="h-11 w-full appearance-none rounded-xl border border-line bg-surface px-3.5 pr-10 text-[15px] outline-none transition hover:border-brand-100 focus:border-brand focus:ring-4 focus:ring-brand/10"
         >
           {options.map((o) => (
             <option key={o.value} value={o.value}>
@@ -133,7 +133,7 @@ export function Segmented<T extends string | number>({
               onClick={() => onChange(o.value)}
               className={`flex-1 rounded-xl font-medium whitespace-nowrap transition sm:flex-none ${
                 size === "sm" ? "px-3 py-1.5 text-sm" : "px-4 py-2 text-sm"
-              } ${actif ? "bg-white text-ink shadow-card ring-1 ring-line" : "text-ink-soft hover:text-ink"}`}
+              } ${actif ? "bg-surface text-ink shadow-card ring-1 ring-line" : "text-ink-soft hover:text-ink"}`}
             >
               {o.label}
             </button>
@@ -151,7 +151,7 @@ export function Switch({ checked, onChange, label, hint }: { checked: boolean; o
       <span className="relative mt-0.5 inline-flex shrink-0">
         <input id={id} type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
         <span className="h-6 w-10 rounded-full bg-line transition peer-checked:bg-brand peer-focus-visible:ring-4 peer-focus-visible:ring-brand/20" />
-        <span className="absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition peer-checked:translate-x-4" />
+        <span className="absolute top-0.5 left-0.5 size-5 rounded-full bg-surface shadow transition peer-checked:translate-x-4" />
       </span>
       <span>
         <span className="block text-sm font-medium text-ink">{label}</span>
@@ -177,7 +177,7 @@ export function Card({
   action?: ReactNode;
 }) {
   return (
-    <section className="animate-fade-up rounded-3xl border border-line bg-white p-5 shadow-card sm:p-7">
+    <section className="rounded-3xl border border-line bg-surface p-5 shadow-card sm:p-7">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
           {icon && <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand">{icon}</span>}
@@ -251,6 +251,11 @@ export function AnimatedNumber({ value, format }: { value: number; format: (n: n
     const depart = courant.current;
     const delta = value - depart;
     if (delta === 0) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      courant.current = value;
+      setAffiche(value);
+      return;
+    }
     const duree = 450;
     const t0 = performance.now();
     let raf = 0;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronUp } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CaretUp as ChevronUp } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "@/components/Logo";
 import { simuler, type Resultat } from "@/lib/fiscal/engine";
 import { PARAMS, type Annee } from "@/lib/fiscal/params";
@@ -33,7 +33,7 @@ function PanneauLive({ r, onVoir }: { r: Resultat; onVoir: () => void }) {
     ...(r.credits.total > 0 ? [{ l: "Crédits", v: `− ${formatEur(r.credits.total)}` }] : []),
   ];
   return (
-    <div className="overflow-hidden rounded-3xl bg-ink text-white shadow-lift">
+    <div className="overflow-hidden rounded-3xl bg-night text-white shadow-lift">
       <div className="bg-brand-gradient p-6">
         <p className="text-sm text-white/70">{restitution ? "Remboursement estimé" : "Impôt estimé"}</p>
         <p className="tabular mt-1 font-display text-4xl font-bold">
@@ -78,8 +78,14 @@ function PanneauLive({ r, onVoir }: { r: Resultat; onVoir: () => void }) {
 }
 
 export function Simulateur() {
-  const { foyer, maj, reinitialiser, charge } = useFoyer();
+  const { foyer, maj, reinitialiser, charge, exemple } = useFoyer();
   const [etape, setEtape] = useState(0);
+
+  // Étape initiale optionnelle : /simulateur?etape=3 (1 à 5).
+  useEffect(() => {
+    const n = Number(new URLSearchParams(window.location.search).get("etape"));
+    if (n >= 1 && n <= ETAPES.length) setEtape(n - 1);
+  }, []);
   const [adulteActif, setAdulteActif] = useState(0);
   const [panneauMobile, setPanneauMobile] = useState(false);
   const haut = useRef<HTMLDivElement>(null);
@@ -95,7 +101,7 @@ export function Simulateur() {
   const derniere = etape === ETAPES.length - 1;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <header className="sticky top-0 z-40 border-b border-line/60 bg-canvas/80 backdrop-blur-xl print:hidden">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           <Logo />
@@ -124,14 +130,14 @@ export function Simulateur() {
               return (
                 <li key={e.id}>
                   <button type="button" onClick={() => aller(k)} className="group w-full text-left" aria-current={courant ? "step" : undefined}>
-                    <span className={`block h-1.5 rounded-full transition-all duration-500 ${fait || courant ? "bg-brand-gradient" : "bg-line group-hover:bg-brand-100"}`} />
+                    <span className={`block h-1.5 rounded-full transition-all duration-500 ${fait || courant ? "bg-brand" : "bg-line group-hover:bg-brand-100"}`} />
                     <span className="mt-3 hidden items-center gap-2 md:flex">
                       <span
                         className={`grid size-6 shrink-0 place-items-center rounded-full text-xs font-bold transition ${
-                          fait ? "bg-mint text-white" : courant ? "bg-brand text-white" : "bg-white text-ink-muted ring-1 ring-line"
+                          fait ? "bg-mint text-white" : courant ? "bg-brand text-white" : "bg-surface text-ink-muted ring-1 ring-line"
                         }`}
                       >
-                        {fait ? <Check className="size-3.5" strokeWidth={3} /> : k + 1}
+                        {fait ? <Check className="size-3.5" weight="bold" /> : k + 1}
                       </span>
                       <span>
                         <span className={`block text-sm font-semibold ${courant ? "text-ink" : "text-ink-soft"}`}>{e.titre}</span>
@@ -148,6 +154,15 @@ export function Simulateur() {
           </p>
         </nav>
 
+        {exemple && (
+          <p className="mt-6 rounded-2xl bg-brand-50 px-4 py-3 text-sm text-ink-soft print:hidden">
+            <strong className="text-ink">Foyer d&apos;exemple.</strong> Vos modifications ne sont pas enregistrées.{" "}
+            <a href="/simulateur" className="font-semibold text-brand underline-offset-2 hover:underline">
+              Commencer avec mes chiffres
+            </a>
+          </p>
+        )}
+
         {params.provisoire && etape === 0 && (
           <p className="mt-6 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-ink-soft print:hidden">
             <strong className="text-ink">Revenus 2026 :</strong> barème provisoire issu du projet de loi de finances 2027, en cours d&apos;examen au
@@ -157,7 +172,7 @@ export function Simulateur() {
 
         <div className={`mt-8 grid items-start gap-8 ${derniere ? "" : "lg:grid-cols-[1fr_340px]"}`}>
           <div key={`${etape}-${charge}`} className="min-w-0">
-            <div className="mb-6">
+            <div className="animate-fade-up mb-6">
               <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">{ETAPES[etape].titre}</h1>
               <p className="mt-1 text-ink-soft">{ETAPES[etape].sousTitre}</p>
             </div>
@@ -181,7 +196,7 @@ export function Simulateur() {
                 type="button"
                 onClick={() => aller(etape - 1)}
                 disabled={etape === 0}
-                className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-ink-soft transition hover:bg-white hover:text-ink disabled:invisible"
+                className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-ink-soft transition hover:bg-surface hover:text-ink disabled:invisible"
               >
                 <ArrowLeft className="size-4" /> Précédent
               </button>
@@ -189,7 +204,7 @@ export function Simulateur() {
                 <button
                   type="button"
                   onClick={() => aller(etape + 1)}
-                  className="bg-brand-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-lift transition hover:-translate-y-0.5"
+                  className="bg-brand-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-lift transition hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 >
                   {etape === ETAPES.length - 2 ? "Voir mon estimation" : "Continuer"}
                   <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
@@ -226,7 +241,7 @@ export function Simulateur() {
           <button
             type="button"
             onClick={() => setPanneauMobile((o) => !o)}
-            className="flex w-full items-center justify-between rounded-2xl bg-ink px-5 py-3.5 text-white shadow-lift"
+            className="flex w-full items-center justify-between rounded-2xl bg-night px-5 py-3.5 text-white shadow-lift"
             aria-expanded={panneauMobile}
           >
             <span className="text-sm text-white/70">{resultat.impotNet < 0 ? "Remboursement estimé" : "Impôt estimé"}</span>

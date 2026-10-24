@@ -1,54 +1,83 @@
 @import "tailwindcss";
 
+/*
+ * Règle d'arrondis (à respecter partout) :
+ * - boutons, pastilles, onglets d'option : rounded-full
+ * - cartes et blocs de section : rounded-3xl (24 px)
+ * - sous-blocs dans une carte : rounded-2xl (16 px)
+ * - champs de saisie, listes déroulantes : rounded-xl (12 px)
+ *
+ * Couleurs : jetons sémantiques redéfinis en mode sombre (prefers-color-scheme).
+ * - canvas / surface : fond de page / fond des cartes
+ * - ink, ink-soft, ink-muted : textes (contraste AA sur surface et canvas)
+ * - night : blocs sombres volontaires, sombres dans les deux modes
+ * Le dégradé de marque est réservé au bouton principal, au chiffre du résultat et au logo.
+ */
 @theme {
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), var(--font-jakarta), ui-sans-serif, sans-serif;
 
   --color-ink: #0d0f2b;
-  --color-ink-soft: #4a4d6e;
-  --color-ink-muted: #8a8cab;
-  --color-line: #e7e8f2;
+  --color-ink-soft: #464966;
+  --color-ink-muted: #63668a;
+  --color-line: #e3e4ef;
   --color-canvas: #f6f6fb;
+  --color-surface: #ffffff;
+  --color-night: #111433;
   --color-brand: #5b47ff;
   --color-brand-600: #4a35f0;
   --color-brand-50: #f0eeff;
   --color-brand-100: #e2ddff;
   --color-violet: #a855f7;
-  --color-mint: #10b981;
+  --color-mint: #0f9f6e;
   --color-mint-50: #e8faf3;
-  --color-amber: #f59e0b;
+  --color-amber: #b7700a;
   --color-amber-50: #fff7e6;
-  --color-rose: #f43f5e;
+  --color-rose: #e11d48;
 
   --shadow-card: 0 1px 2px rgb(13 15 43 / 0.04), 0 8px 24px -12px rgb(13 15 43 / 0.12);
   --shadow-lift: 0 2px 4px rgb(13 15 43 / 0.04), 0 24px 48px -20px rgb(91 71 255 / 0.35);
 
-  --animate-fade-up: fade-up 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
   @keyframes fade-up {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(10px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-ink: #eceefe;
+    --color-ink-soft: #b9bcdb;
+    --color-ink-muted: #9093b8;
+    --color-line: #262a4d;
+    --color-canvas: #0a0b1c;
+    --color-surface: #13152d;
+    --color-night: #1b1e42;
+    --color-brand: #8b7bff;
+    --color-brand-600: #7a68ff;
+    --color-brand-50: #1f1d4a;
+    --color-brand-100: #322e6e;
+    --color-mint: #34d399;
+    --color-mint-50: #0f2a24;
+    --color-amber: #fbbf24;
+    --color-amber-50: #2a2112;
+    --color-rose: #fb7185;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
+    --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -20px rgb(91 71 255 / 0.35);
   }
 }
 
 html {
   scroll-behavior: smooth;
+  color-scheme: light dark;
 }
 
 body {
@@ -58,11 +87,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
 .text-gradient {
-  background: linear-gradient(100deg, var(--color-brand) 10%, var(--color-violet) 90%);
+  background: linear-gradient(100deg, #5b47ff 10%, #a855f7 90%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+@media (prefers-color-scheme: dark) {
+  .text-gradient {
+    background-image: linear-gradient(100deg, #9d8fff 10%, #c792ff 90%);
+  }
 }
 
 .bg-brand-gradient {
@@ -71,9 +111,8 @@ body {
 
 .bg-mesh {
   background:
-    radial-gradient(60% 50% at 15% 10%, rgb(91 71 255 / 0.16), transparent 70%),
-    radial-gradient(45% 40% at 90% 20%, rgb(168 85 247 / 0.14), transparent 70%),
-    radial-gradient(50% 50% at 60% 100%, rgb(16 185 129 / 0.1), transparent 70%);
+    radial-gradient(60% 50% at 15% 10%, rgb(91 71 255 / 0.14), transparent 70%),
+    radial-gradient(45% 40% at 90% 20%, rgb(168 85 247 / 0.12), transparent 70%);
 }
 
 .tabular {

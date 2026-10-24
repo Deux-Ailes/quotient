@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "./Logo";
 
-export function SiteHeader() {
+export function SiteHeader({ cta }: { cta: string }) {
   return (
     <header className="sticky top-0 z-40 border-b border-line/60 bg-canvas/75 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -23,10 +23,10 @@ export function SiteHeader() {
         </nav>
         <Link
           href="/simulateur"
-          className="group inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand"
+          className="group inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-semibold whitespace-nowrap text-canvas transition hover:bg-brand hover:text-white active:scale-[0.98]"
         >
-          Simuler
-          <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+          {cta}
+          <ArrowRight className="size-4 transition group-hover:translate-x-0.5" weight="bold" />
         </Link>
       </div>
     </header>
@@ -35,7 +35,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-line bg-white">
+    <footer className="border-t border-line bg-surface">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1.2fr_1fr]">
         <div className="space-y-3">
           <Logo />
@@ -72,7 +72,7 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
-      <div className="border-t border-line py-5 text-center text-xs text-ink-muted">© {new Date().getFullYear()} Quotient — estimation non contractuelle</div>
+      <div className="border-t border-line py-5 text-center text-xs text-ink-muted">© {new Date().getFullYear()} Quotient, estimation non contractuelle</div>
     </footer>
   );
 }
