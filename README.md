@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quotient
 
-## Getting Started
+Simulateur d'impôt sur le revenu pour les particuliers en France : landing page + assistant en 5 étapes
+(foyer, revenus, frais réels, déductions, résultat). Tous les calculs sont faits dans le navigateur, et le brouillon
+est conservé en `localStorage`.
 
-First, run the development server:
+## Démarrer
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm test        # tests du moteur fiscal (vitest)
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Chemin | Rôle |
+| --- | --- |
+| `src/lib/fiscal/params.ts` | **Tous les paramètres fiscaux** par année de revenus (barème, décote, QF, plafonds, barème km…) |
+| `src/lib/fiscal/engine.ts` | Moteur : revenus catégoriels, quotient familial plafonné, décote, réductions, crédits, CEHR, PAS |
+| `src/lib/fiscal/fraisReels.ts` | Frais kilométriques, repas, télétravail, matériel amorti |
+| `src/lib/fiscal/engine.test.ts` | Cas de référence calculés à la main |
+| `src/app/page.tsx` | Landing page (l'exemple affiché est calculé par le vrai moteur) |
+| `src/components/sim/` | Assistant de simulation |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Mettre à jour les paramètres
 
-## Learn More
+Les revenus 2026 utilisent le barème du **PLF 2027** (+2,1 %), pas encore voté : `PARAMS_2026.provisoire = true`.
+Après promulgation de la loi de finances :
 
-To learn more about Next.js, take a look at the following resources:
+1. Corriger `PARAMS_2026` dans `params.ts` (barème, décote, plafonds QF, abattements…) et passer `provisoire` à `false`.
+2. Mettre à jour `notes` (affichées dans « Hypothèses de calcul »).
+3. Mettre à jour les tests correspondants, puis lancer `npm test`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Points à surveiller en particulier :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- plafond de l'abattement de 10 % sur les pensions (le PLF propose 3 000 € ; non retenu ici) ;
+- revalorisation éventuelle de 10 % du barème kilométrique ;
+- forfait repas (valeur du repas pris au domicile et plafond) et forfait télétravail.
 
-## Deploy on Vercel
+## Limites connues
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Non modélisé : revenus exceptionnels (système du quotient), contribution différentielle sur les hauts revenus,
+plus-values, reports de déficits et de réductions, mutualisation des plafonds PER entre conjoints, réduction pour
+frais de dépendance hors EHPAD, versement libératoire des micro-entrepreneurs.
