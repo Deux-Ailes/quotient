@@ -21,12 +21,52 @@ export interface Vehicule {
   peagesParking: number;
 }
 
+export interface Equipement {
+  id: string;
+  libelle: string;
+  /** Prix d'achat TTC. */
+  prix: number;
+  /** Part d'utilisation professionnelle (%). */
+  usagePro: number;
+  categorie: "informatique" | "mobilier";
+}
+
+/** Dépenses annuelles de l'ensemble du logement, réparties au prorata de la surface du bureau. */
+export interface DepensesLogement {
+  loyer: number;
+  chargesLocatives: number;
+  electricite: number;
+  chauffage: number;
+  eau: number;
+  assurance: number;
+  taxeFonciere: number;
+  chargesCopropriete: number;
+  entretien: number;
+}
+
+export interface Teletravail {
+  mode: "forfait" | "reel";
+  jours: number;
+  statut: "locataire" | "proprietaire";
+  surfaceBureau: number;
+  surfaceLogement: number;
+  /** Pièce réservée exclusivement au travail. */
+  pieceDediee: boolean;
+  /** Logement d'une seule pièce : déduction limitée à la moitié de la surface. */
+  studio: boolean;
+  depenses: DepensesLogement;
+  /** Dépenses propres au bureau (peinture, aménagement…), retenues en totalité. */
+  depensesBureau: number;
+  internet: { montant: number; usagePro: number };
+  equipements: Equipement[];
+}
+
 export interface FraisReels {
   vehicules: Vehicule[];
   /** Part non remboursée d'abonnement de transports en commun. */
   transportsCommun: number;
   repas: { jours: number; prixMoyen: number; participationEmployeur: number };
-  teletravail: { mode: "forfait" | "reel"; jours: number; montantReel: number };
+  teletravail: Teletravail;
   /** Allocations et remboursements de l'employeur à réintégrer dans le salaire. */
   remboursementsEmployeur: number;
   doubleResidence: number;

@@ -29,7 +29,7 @@ function exemple() {
   f.adultes[0].prenom = "Camille";
   f.adultes[0].salaires = 42000;
   f.adultes[0].frais.vehicules = [{ ...nouveauVehicule(), distanceAller: 32, joursParAn: 170 }];
-  f.adultes[0].frais.teletravail = { mode: "forfait", jours: 45, montantReel: 0 };
+  f.adultes[0].frais.teletravail.jours = 45;
   f.adultes[0].frais.repas = { jours: 170, prixMoyen: 13, participationEmployeur: 0 };
   f.adultes[1].prenom = "Alex";
   f.adultes[1].salaires = 31000;

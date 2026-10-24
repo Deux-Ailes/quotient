@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { foyerParDefaut } from "@/lib/fiscal/defaults";
+import { foyerParDefaut, teletravailVide } from "@/lib/fiscal/defaults";
 import type { Foyer } from "@/lib/fiscal/types";
 
 const CLE = "quotient:brouillon:v1";
@@ -16,9 +16,16 @@ function lire(): Foyer | null {
     const f = JSON.parse(brut) as Foyer;
     // Fusion superficielle avec les valeurs par défaut pour absorber les évolutions du modèle.
     const d = foyerParDefaut();
+    const adultes = f.adultes.map((a, i) => {
+      const base = d.adultes[i];
+      const tt = { ...teletravailVide(), ...a.frais?.teletravail };
+      tt.depenses = { ...teletravailVide().depenses, ...tt.depenses };
+      return { ...base, ...a, frais: { ...base.frais, ...a.frais, teletravail: tt } };
+    }) as Foyer["adultes"];
     return {
       ...d,
       ...f,
+      adultes,
       foncier: { ...d.foncier, ...f.foncier },
       capitaux: { ...d.capitaux, ...f.capitaux },
       deductions: { ...d.deductions, ...f.deductions },

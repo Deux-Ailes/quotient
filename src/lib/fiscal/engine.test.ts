@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { calculerDecote, impotBareme, simuler } from "./engine";
-import { foyerParDefaut, nouveauVehicule, nouvelEnfant } from "./defaults";
+import { foyerParDefaut, nouveauVehicule, nouvelEnfant, teletravailVide } from "./defaults";
 import { fraisRepas, fraisTeletravail, fraisVehicule } from "./fraisReels";
 import { PARAMS_2025, PARAMS_2026 } from "./params";
-import type { Foyer } from "./types";
+import type { Foyer, Teletravail } from "./types";
 
 function celibataire(salaire: number, annee: Foyer["annee"] = 2026): Foyer {
   const f = foyerParDefaut();
@@ -105,7 +105,7 @@ describe("frais réels", () => {
     expect(fraisRepas({ jours: 200, prixMoyen: 15, participationEmployeur: 0 }, PARAMS_2026)).toBeCloseTo(1890, 2);
   });
   it("télétravail au forfait plafonné", () => {
-    expect(fraisTeletravail({ mode: "forfait", jours: 300, montantReel: 0 }, PARAMS_2026)).toBeCloseTo(626.4, 2);
+    expect(fraisTeletravail({ ...teletravailVide(), jours: 300 }, PARAMS_2026).total).toBeCloseTo(626.4, 2);
   });
   it("le mode auto retient les frais réels quand ils dépassent 10 %", () => {
     const f = celibataire(30000);
@@ -113,6 +113,70 @@ describe("frais réels", () => {
     const r = simuler(f);
     expect(r.adultes[0].modeRetenu).toBe("reels");
     expect(r.adultes[0].salairesNets).toBe(30000 - 6065);
+  });
+});
+
+describe("télétravail aux frais réels", () => {
+  const logement = (): Teletravail => ({
+    ...teletravailVide(),
+    mode: "reel",
+    jours: 146,
+    surfaceBureau: 10,
+    surfaceLogement: 70,
+    depenses: {
+      loyer: 9600,
+      chargesLocatives: 600,
+      electricite: 900,
+      chauffage: 700,
+      eau: 300,
+      assurance: 200,
+      taxeFonciere: 800,
+      chargesCopropriete: 1200,
+      entretien: 0,
+    },
+    internet: { montant: 480, usagePro: 50 },
+  });
+
+  it("locataire, pièce dédiée : loyer et énergies au prorata de la surface", () => {
+    const d = fraisTeletravail(logement(), PARAMS_2026);
+    expect(d.depensesCommunes).toBe(12300);
+    expect(d.ratioSurface).toBeCloseTo(1 / 7, 6);
+    expect(d.local).toBeCloseTo(12300 / 7, 2);
+    expect(d.internet).toBe(240);
+    expect(d.total).toBeCloseTo(12300 / 7 + 240, 2);
+  });
+  it("propriétaire : taxe foncière et copropriété au lieu du loyer", () => {
+    const d = fraisTeletravail({ ...logement(), statut: "proprietaire" }, PARAMS_2026);
+    expect(d.depensesCommunes).toBe(900 + 700 + 300 + 200 + 800 + 1200);
+  });
+  it("studio : au plus la moitié de la surface", () => {
+    const d = fraisTeletravail({ ...logement(), studio: true, surfaceBureau: 20, surfaceLogement: 30 }, PARAMS_2026);
+    expect(d.ratioSurface).toBe(0.5);
+  });
+  it("pièce partagée : prorata d'usage selon les jours télétravaillés", () => {
+    const d = fraisTeletravail({ ...logement(), pieceDediee: false }, PARAMS_2026);
+    expect(d.ratioUsage).toBeCloseTo(0.4, 6);
+    expect(d.local).toBeCloseTo((12300 / 7) * 0.4, 2);
+  });
+  it("équipements : déduction immédiate sous 500 € HT, sinon amortissement", () => {
+    const t: Teletravail = {
+      ...logement(),
+      equipements: [
+        { id: "pc", libelle: "Portable", prix: 1200, usagePro: 100, categorie: "informatique" },
+        { id: "chaise", libelle: "Chaise", prix: 480, usagePro: 100, categorie: "mobilier" },
+        { id: "bureau", libelle: "Bureau", prix: 900, usagePro: 100, categorie: "mobilier" },
+      ],
+    };
+    const d = fraisTeletravail(t, PARAMS_2026);
+    expect(d.equipements.map((e) => Math.round(e.montant))).toEqual([400, 480, 90]);
+  });
+  it("forfait cumulable avec les équipements", () => {
+    const t: Teletravail = {
+      ...teletravailVide(),
+      jours: 100,
+      equipements: [{ id: "c", libelle: "Chaise", prix: 480, usagePro: 100, categorie: "mobilier" }],
+    };
+    expect(fraisTeletravail(t, PARAMS_2026).total).toBeCloseTo(270 + 480, 2);
   });
 });
 

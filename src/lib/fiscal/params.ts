@@ -54,9 +54,17 @@ export interface ParamsFiscaux {
     plafondDistanceKm: number;
     majorationElectrique: number;
     repas: { valeurForfaitaire: number; plafond: number };
-    teletravail: { parJour: number; plafondAnnuel: number };
+    /**
+     * Forfait télétravail (limite d'exonération des allocations employeur, admise en frais réels).
+     * Frais réels de local : BOI-RSA-BASE-30-50-30-30 §10 à §100 (prorata de surface, pièce entière
+     * ou moitié d'un studio au plus).
+     */
+    teletravail: { parJour: number; plafondMensuel: number; plafondAnnuel: number; plafondSurfaceStudio: number };
+    /** Matériel et mobilier : BOI-RSA-BASE-30-50-30-40 §70-80 (seuil en HT, amortissement linéaire). */
     seuilAmortissementMateriel: number;
+    tauxTVA: number;
     dureeAmortissementMateriel: number;
+    dureeAmortissementMobilier: number;
     cotisationsSyndicalesPlafond: number;
   };
 
@@ -183,6 +191,7 @@ export const PARAMS_2025: ParamsFiscaux = {
   notes: [
     "Barème, décote et plafonds du quotient familial : loi de finances 2026 (revalorisation de 0,9 %).",
     "Barème kilométrique gelé depuis les revenus 2022.",
+    "Forfait télétravail : 2,70 €/jour (59,40 €/mois, 626,40 €/an), dernier montant officiel publié (revenus 2024).",
   ],
   bareme: [
     { jusqua: 11600, taux: 0 },
@@ -202,9 +211,11 @@ export const PARAMS_2025: ParamsFiscaux = {
     plafondDistanceKm: 40,
     majorationElectrique: 0.2,
     repas: { valeurForfaitaire: 5.45, plafond: 21.1 },
-    teletravail: { parJour: 2.7, plafondAnnuel: 626.4 },
+    teletravail: { parJour: 2.7, plafondMensuel: 59.4, plafondAnnuel: 626.4, plafondSurfaceStudio: 0.5 },
     seuilAmortissementMateriel: 500,
+    tauxTVA: 0.2,
     dureeAmortissementMateriel: 3,
+    dureeAmortissementMobilier: 10,
     cotisationsSyndicalesPlafond: 0.01,
   },
   bareme_km: { voiture: KM_VOITURE, cyclomoteur: KM_CYCLO, moto: KM_MOTO },
@@ -258,6 +269,7 @@ export const PARAMS_2026: ParamsFiscaux = {
     "Le PLF prévoit de ramener le plafond de l'abattement de 10 % sur les pensions à 3 000 € par foyer ; mesure contestée, non retenue ici.",
     "Prélèvements sociaux sur dividendes et intérêts portés à 18,6 % (LFSS 2026) ; revenus fonciers maintenus à 17,2 %.",
     "Barème kilométrique supposé gelé (une revalorisation de 10 % est débattue).",
+    "Forfait télétravail maintenu à 2,70 €/jour, faute de nouveau montant publié.",
   ],
   bareme: [
     { jusqua: 11844, taux: 0 },

@@ -1,5 +1,5 @@
 import { ANNEE_DEFAUT } from "./params";
-import type { Adulte, Enfant, FraisReels, Foyer, Vehicule } from "./types";
+import type { Adulte, Enfant, Equipement, FraisReels, Foyer, Teletravail, Vehicule } from "./types";
 
 let compteur = 0;
 export const nouvelId = () => `${Date.now().toString(36)}-${(compteur++).toString(36)}`;
@@ -19,12 +19,42 @@ export function nouveauVehicule(): Vehicule {
   };
 }
 
+export function teletravailVide(): Teletravail {
+  return {
+    mode: "forfait",
+    jours: 0,
+    statut: "locataire",
+    surfaceBureau: 0,
+    surfaceLogement: 0,
+    pieceDediee: true,
+    studio: false,
+    depenses: {
+      loyer: 0,
+      chargesLocatives: 0,
+      electricite: 0,
+      chauffage: 0,
+      eau: 0,
+      assurance: 0,
+      taxeFonciere: 0,
+      chargesCopropriete: 0,
+      entretien: 0,
+    },
+    depensesBureau: 0,
+    internet: { montant: 0, usagePro: 50 },
+    equipements: [],
+  };
+}
+
+export function nouvelEquipement(): Equipement {
+  return { id: nouvelId(), libelle: "", prix: 0, usagePro: 100, categorie: "informatique" };
+}
+
 export function fraisVides(): FraisReels {
   return {
     vehicules: [],
     transportsCommun: 0,
     repas: { jours: 0, prixMoyen: 0, participationEmployeur: 0 },
-    teletravail: { mode: "forfait", jours: 0, montantReel: 0 },
+    teletravail: teletravailVide(),
     remboursementsEmployeur: 0,
     doubleResidence: 0,
     formation: 0,

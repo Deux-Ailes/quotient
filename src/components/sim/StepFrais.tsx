@@ -1,12 +1,13 @@
 "use client";
 
-import { Car, GraduationCap, Laptop, Plus, Scale, Trash2, UtensilsCrossed, Wrench } from "lucide-react";
+import { Car, GraduationCap, Plus, Scale, Trash2, UtensilsCrossed, Wrench } from "lucide-react";
 import { nouveauVehicule } from "@/lib/fiscal/defaults";
 import type { Resultat } from "@/lib/fiscal/engine";
 import { PARAMS } from "@/lib/fiscal/params";
 import type { Foyer, Vehicule } from "@/lib/fiscal/types";
 import { formatEur, formatEurCents, formatNombre } from "@/lib/format";
 import { AdultTabs } from "./StepRevenus";
+import { CarteTeletravail } from "./CarteTeletravail";
 import type { Maj } from "./useFoyer";
 import { Card, Collapsible, Grid, Note, NumberField, Pill, Segmented, SelectField, Switch } from "./ui";
 
@@ -237,48 +238,13 @@ export function StepFrais({
       </Card>
 
       {/* Télétravail */}
-      <Card
-        title="Télétravail"
-        icon={<Laptop className="size-5" />}
-        description="Forfait par jour ou frais réellement engagés (quote-part de loyer, électricité, internet, mobilier)."
-        action={<span className="tabular text-sm font-semibold text-brand">{formatEur(r.fraisReels.teletravail)}</span>}
-      >
-        <Segmented
-          size="sm"
-          value={f.teletravail.mode}
-          onChange={(v) => maj((d) => void (d.adultes[i].frais.teletravail.mode = v))}
-          options={[
-            { value: "forfait", label: `Forfait ${formatEurCents(p.fraisReels.teletravail.parJour)}/jour` },
-            { value: "reel", label: "Frais réels" },
-          ]}
-        />
-        <div className="mt-4">
-          <Grid>
-            {f.teletravail.mode === "forfait" ? (
-              <NumberField
-                label="Jours de télétravail"
-                suffix="jours"
-                value={f.teletravail.jours}
-                onChange={(v) => maj((d) => void (d.adultes[i].frais.teletravail.jours = Math.round(v)))}
-                hint={`Plafond annuel : ${formatEurCents(p.fraisReels.teletravail.plafondAnnuel)}.`}
-              />
-            ) : (
-              <NumberField
-                label="Montant des frais justifiés"
-                value={f.teletravail.montantReel}
-                onChange={(v) => maj((d) => void (d.adultes[i].frais.teletravail.montantReel = v))}
-                hint="Au prorata de la surface et du temps de travail."
-              />
-            )}
-            <NumberField
-              label="Allocations reçues de l'employeur"
-              value={f.remboursementsEmployeur}
-              onChange={(v) => maj((d) => void (d.adultes[i].frais.remboursementsEmployeur = v))}
-              hint="Allocations télétravail, indemnités kilométriques… réintégrées au salaire en cas de frais réels."
-            />
-          </Grid>
-        </div>
-      </Card>
+      <CarteTeletravail
+        t={f.teletravail}
+        set={(recette) => maj((d) => recette(d.adultes[i].frais.teletravail))}
+        remboursements={f.remboursementsEmployeur}
+        setRemboursements={(v) => maj((d) => void (d.adultes[i].frais.remboursementsEmployeur = v))}
+        p={p}
+      />
 
       {/* Autres */}
       <Card title="Autres frais professionnels" icon={<Wrench className="size-5" />} description="Uniquement les dépenses non remboursées et justifiables.">
