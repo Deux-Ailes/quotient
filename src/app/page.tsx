@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -211,17 +212,17 @@ export default function LandingPage() {
               <span className="size-2.5 rounded-full bg-line" />
               <span className="size-2.5 rounded-full bg-line" />
             </div>
-            <picture>
-              <source srcSet="/apercu-frais-reels-sombre.png" media="(prefers-color-scheme: dark)" />
-              <img
-                src="/apercu-frais-reels.png"
+            {(["clair", "sombre"] as const).map((theme) => (
+              <Image
+                key={theme}
+                src={theme === "clair" ? "/apercu-frais-reels.png" : "/apercu-frais-reels-sombre.png"}
                 alt="Étape Frais réels du simulateur : comparaison entre l'abattement de 10 % et les frais réels de Camille, avec l'impôt estimé en direct."
                 width={2560}
                 height={1720}
-                loading="lazy"
-                className="block aspect-[16/9] w-full object-cover object-top"
+                sizes="(min-width: 1152px) 1104px, 100vw"
+                className={`image-theme-${theme} aspect-[16/9] w-full object-cover object-top`}
               />
-            </picture>
+            ))}
           </figure>
           <figcaption className="mt-4 text-center text-sm text-ink-muted">
             L&apos;étape Frais réels, avec le foyer d&apos;exemple.{" "}

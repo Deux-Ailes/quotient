@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function SiteHeader({ cta }: { cta: string }) {
   return (
@@ -21,13 +22,17 @@ export function SiteHeader({ cta }: { cta: string }) {
             FAQ
           </a>
         </nav>
-        <Link
-          href="/simulateur"
-          className="group inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-semibold whitespace-nowrap text-canvas transition hover:bg-brand hover:text-white active:scale-[0.98]"
-        >
-          {cta}
-          <ArrowRight className="size-4 transition group-hover:translate-x-0.5" weight="bold" />
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {/* Sur mobile, le bouton du hero suffit : l'en-tête garde la place pour le logo et le thème. */}
+          <Link
+            href="/simulateur"
+            className="group hidden items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-semibold whitespace-nowrap text-canvas transition hover:bg-brand hover:text-white active:scale-[0.98] sm:inline-flex"
+          >
+            {cta}
+            <ArrowRight className="size-4 transition group-hover:translate-x-0.5" weight="bold" />
+          </Link>
+        </div>
       </div>
     </header>
   );

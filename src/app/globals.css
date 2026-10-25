@@ -7,7 +7,7 @@
  * - sous-blocs dans une carte : rounded-2xl (16 px)
  * - champs de saisie, listes déroulantes : rounded-xl (12 px)
  *
- * Couleurs : jetons sémantiques redéfinis en mode sombre (prefers-color-scheme).
+ * Couleurs : jetons sémantiques redéfinis en mode sombre (attribut data-theme, voir plus bas).
  * - canvas / surface : fond de page / fond des cartes
  * - ink, ink-soft, ink-muted : textes (contraste AA sur surface et canvas)
  * - night : blocs sombres volontaires, sombres dans les deux modes
@@ -52,32 +52,49 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-ink: #eceefe;
-    --color-ink-soft: #b9bcdb;
-    --color-ink-muted: #9093b8;
-    --color-line: #262a4d;
-    --color-canvas: #0a0b1c;
-    --color-surface: #13152d;
-    --color-night: #1b1e42;
-    --color-brand: #8b7bff;
-    --color-brand-600: #7a68ff;
-    --color-brand-50: #1f1d4a;
-    --color-brand-100: #322e6e;
-    --color-mint: #34d399;
-    --color-mint-50: #0f2a24;
-    --color-amber: #fbbf24;
-    --color-amber-50: #2a2112;
-    --color-rose: #fb7185;
-    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
-    --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -20px rgb(91 71 255 / 0.35);
-  }
+/*
+ * Thème sombre piloté par l'attribut data-theme sur <html> : posé avant l'affichage par le script
+ * du layout (choix mémorisé, sinon thème du système), puis par le bouton de thème.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-ink: #eceefe;
+  --color-ink-soft: #b9bcdb;
+  --color-ink-muted: #9093b8;
+  --color-line: #262a4d;
+  --color-canvas: #0a0b1c;
+  --color-surface: #13152d;
+  --color-night: #1b1e42;
+  --color-brand: #8b7bff;
+  --color-brand-600: #7a68ff;
+  --color-brand-50: #1f1d4a;
+  --color-brand-100: #322e6e;
+  --color-mint: #34d399;
+  --color-mint-50: #0f2a24;
+  --color-amber: #fbbf24;
+  --color-amber-50: #2a2112;
+  --color-rose: #fb7185;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -20px rgb(91 71 255 / 0.35);
 }
 
 html {
   scroll-behavior: smooth;
-  color-scheme: light dark;
+  color-scheme: light;
+}
+
+/* Images déclinées par thème (captures du simulateur). */
+.image-theme-clair {
+  display: block;
+}
+.image-theme-sombre {
+  display: none;
+}
+:root[data-theme="dark"] .image-theme-clair {
+  display: none;
+}
+:root[data-theme="dark"] .image-theme-sombre {
+  display: block;
 }
 
 body {
@@ -99,10 +116,8 @@ h3 {
   background-clip: text;
   color: transparent;
 }
-@media (prefers-color-scheme: dark) {
-  .text-gradient {
-    background-image: linear-gradient(100deg, #9d8fff 10%, #c792ff 90%);
-  }
+:root[data-theme="dark"] .text-gradient {
+  background-image: linear-gradient(100deg, #9d8fff 10%, #c792ff 90%);
 }
 
 .bg-brand-gradient {

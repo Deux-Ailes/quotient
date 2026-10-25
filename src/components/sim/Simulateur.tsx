@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, CaretUp as ChevronUp } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { simuler, type Resultat } from "@/lib/fiscal/engine";
 import { PARAMS, type Annee } from "@/lib/fiscal/params";
 import { formatEur, formatPct } from "@/lib/format";
@@ -116,6 +117,7 @@ export function Simulateur() {
                 { value: 2025, label: "2025" },
               ]}
             />
+            <ThemeToggle />
           </div>
         </div>
       </header>
