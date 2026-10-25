@@ -5,6 +5,8 @@ import { Warning as AlertTriangle, CalendarBlank as CalendarClock, Printer, Arro
 import type { Resultat } from "@/lib/fiscal/engine";
 import { formatEur, formatNombre, formatPct } from "@/lib/format";
 import { AnimatedNumber, Card, Note, Pill } from "./ui";
+import type { Foyer } from "@/lib/fiscal/types";
+import { BlocDeclaration } from "./BlocDeclaration";
 
 type Ligne = { label: string; valeur: number; signe?: "+" | "−" | "="; detail?: string; fort?: boolean; masquerSiZero?: boolean };
 
@@ -63,7 +65,7 @@ function Bareme({ r }: { r: Resultat }) {
   );
 }
 
-export function StepResultat({ r, onReset }: { r: Resultat; onReset: () => void }) {
+export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer; onReset: () => void }) {
   const [confirmer, setConfirmer] = useState(false);
   const restitution = r.impotNet < 0;
   const reels = r.adultes.filter((a) => a.salairesBruts > 0);
@@ -188,6 +190,8 @@ export function StepResultat({ r, onReset }: { r: Resultat; onReset: () => void 
           {r.sousSeuilRecouvrement && <p className="mt-3 text-xs text-ink-muted">Impôt inférieur à 61 € : il n&apos;est pas mis en recouvrement.</p>}
         </Card>
       </div>
+
+      <BlocDeclaration foyer={foyer} r={r} />
 
       <Card title="Votre position dans le barème">
         <Bareme r={r} />

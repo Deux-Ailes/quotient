@@ -184,6 +184,7 @@ export function Simulateur() {
             {etape === 4 && (
               <StepResultat
                 r={resultat}
+                foyer={foyer}
                 onReset={() => {
                   reinitialiser();
                   setEtape(0);
