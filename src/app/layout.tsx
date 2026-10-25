@@ -27,11 +27,13 @@ export default function RootLayout({
 }>) {
   return (
     // L'attribut data-theme est posé par le script avant l'hydratation : on tolère l'écart côté React.
-    <html lang="fr" suppressHydrationWarning>
+    // Les variables de police sont posées sur <html> : le thème Tailwind (--font-sans, --font-display)
+    // les lit sur :root, où elles doivent donc être définies.
+    <html lang="fr" className={`${jakarta.variable} ${display.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_THEME }} />
       </head>
-      <body className={`${jakarta.variable} ${display.variable} antialiased`}>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
