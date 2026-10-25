@@ -8,6 +8,7 @@ import type { Foyer, Vehicule } from "@/lib/fiscal/types";
 import { formatEur, formatEurCents, formatNombre } from "@/lib/format";
 import { AdultTabs } from "./StepRevenus";
 import { CarteTeletravail } from "./CarteTeletravail";
+import { ResumeFraisReels } from "./ResumeFraisReels";
 import type { Maj } from "./useFoyer";
 import { Card, Collapsible, Grid, Note, NumberField, Pill, Segmented, SelectField, Switch } from "./ui";
 
@@ -286,6 +287,8 @@ export function StepFrais({
           <GraduationCap className="size-4" /> Conservez vos justificatifs pendant 3 ans.
         </div>
       </Card>
+
+      <ResumeFraisReels foyer={foyer} r={resultat} />
     </div>
   );
 }

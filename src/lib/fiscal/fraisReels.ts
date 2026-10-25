@@ -15,6 +15,20 @@ export function kmAnnuels(v: Vehicule, p: ParamsFiscaux): number {
   return Math.max(0, distance) * 2 * v.allerRetoursParJour * Math.max(0, v.joursParAn) + Math.max(0, v.kmSupplementaires);
 }
 
+/** Formule du barème kilométrique appliquée à un véhicule. */
+export function formuleKm(v: Vehicule, p: ParamsFiscaux): FormuleKm & { majoration: number } {
+  const km = kmAnnuels(v, p);
+  const formules =
+    v.type === "voiture" || v.type === "voiture_electrique"
+      ? p.bareme_km.voiture[v.puissanceVoiture]
+      : v.type === "cyclomoteur"
+        ? p.bareme_km.cyclomoteur
+        : p.bareme_km.moto[v.puissanceMoto];
+  const f = formules.find((t) => km <= t.jusqua) ?? formules[formules.length - 1];
+  const majoration = v.type === "voiture_electrique" || v.type === "moto_electrique" ? p.fraisReels.majorationElectrique : 0;
+  return { ...f, majoration };
+}
+
 export function fraisVehicule(v: Vehicule, p: ParamsFiscaux): { km: number; montant: number } {
   const km = kmAnnuels(v, p);
   let montant: number;
@@ -174,22 +188,39 @@ export interface DetailFraisReels {
   total: number;
 }
 
+/**
+ * Télétravail arrondi comme dans le justificatif : chaque sous-poste affiché est arrondi à l'euro
+ * avant d'être additionné, pour que le détail retombe exactement sur le total.
+ */
+function teletravailArrondi(t: DetailTeletravail): number {
+  const r = Math.round;
+  const equipements = t.equipements.reduce((s, e) => s + r(e.montant), 0);
+  if (t.mode === "forfait") return r(t.forfait) + equipements;
+  const bureau = t.local - t.localFixes - t.localEnergies;
+  return r(t.localFixes) + r(t.localEnergies) + r(bureau) + r(t.internet) + equipements;
+}
+
+/** Chaque poste est arrondi à l'euro : le total est la somme exacte des montants justifiés. */
 export function calculerFraisReels(f: FraisReels, salairesBruts: number, p: ParamsFiscaux): DetailFraisReels {
-  const vehicules = f.vehicules.map((v) => ({ id: v.id, ...fraisVehicule(v, p) }));
+  const r = Math.round;
+  const vehicules = f.vehicules.map((v) => {
+    const d = fraisVehicule(v, p);
+    return { id: v.id, km: d.km, montant: r(d.montant) };
+  });
   const teletravailDetail = fraisTeletravail(f.teletravail, p);
   const detail = {
     vehicules,
-    transportsCommun: pos(f.transportsCommun),
-    repas: fraisRepas(f.repas, p),
-    teletravail: teletravailDetail.total,
+    transportsCommun: r(pos(f.transportsCommun)),
+    repas: r(fraisRepas(f.repas, p)),
+    teletravail: teletravailArrondi(teletravailDetail),
     teletravailDetail,
-    doubleResidence: pos(f.doubleResidence),
-    formation: pos(f.formation),
-    materiel: fraisMateriel(f.materiel, p),
-    cotisationsSyndicales: Math.min(pos(f.cotisationsSyndicales), salairesBruts * p.fraisReels.cotisationsSyndicalesPlafond),
-    vetements: pos(f.vetements),
-    documentation: pos(f.documentation),
-    autres: pos(f.autres),
+    doubleResidence: r(pos(f.doubleResidence)),
+    formation: r(pos(f.formation)),
+    materiel: r(fraisMateriel(f.materiel, p)),
+    cotisationsSyndicales: r(Math.min(pos(f.cotisationsSyndicales), salairesBruts * p.fraisReels.cotisationsSyndicalesPlafond)),
+    vetements: r(pos(f.vetements)),
+    documentation: r(pos(f.documentation)),
+    autres: r(pos(f.autres)),
   };
   const total =
     vehicules.reduce((s, v) => s + v.montant, 0) +

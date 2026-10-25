@@ -13,7 +13,7 @@ describe("détail de la déclaration", () => {
     const c = Object.fromEntries(cases(detailDeclaration(f, simuler(f))));
     expect(c["1AJ"]).toBe("42 000 €");
     expect(c["1BJ"]).toBe("31 000 €");
-    expect(c["1AK"]).toBe("6 667 €");
+    expect(c["1AK"]).toBe("6 668 €");
     expect(c["1BK"]).toBeUndefined();
     expect(c["F"]).toBe("1");
     expect(c["7GA"]).toBe("4 200 €");

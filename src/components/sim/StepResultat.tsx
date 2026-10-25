@@ -7,6 +7,7 @@ import { formatEur, formatNombre, formatPct } from "@/lib/format";
 import { AnimatedNumber, Card, Note, Pill } from "./ui";
 import type { Foyer } from "@/lib/fiscal/types";
 import { BlocDeclaration } from "./BlocDeclaration";
+import { ResumeFraisReels } from "./ResumeFraisReels";
 
 type Ligne = { label: string; valeur: number; signe?: "+" | "−" | "="; detail?: string; fort?: boolean; masquerSiZero?: boolean };
 
@@ -192,6 +193,8 @@ export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer;
       </div>
 
       <BlocDeclaration foyer={foyer} r={r} />
+
+      <ResumeFraisReels foyer={foyer} r={r} />
 
       <Card title="Votre position dans le barème">
         <Bareme r={r} />
