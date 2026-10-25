@@ -107,6 +107,7 @@ export function foyerParDefaut(): Foyer {
     deductions: { pensionEnfantsMajeurs: [], pensionExConjoint: 0 },
     reductions: {
       dons75: 0,
+      dons75AvantBascule: 0,
       dons66: 0,
       emploiDomicile: { depenses: 0, premiereAnnee: false },
       ehpad: [],

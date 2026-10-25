@@ -106,7 +106,17 @@ export interface ParamsFiscaux {
   };
 
   reductions: {
-    dons: { taux75: number; plafond75: number; taux66: number; plafondRevenu: number };
+    dons: {
+      taux75: number;
+      plafond75: number;
+      taux66: number;
+      plafondRevenu: number;
+      /**
+       * Année de transition : plafond plus bas pour les dons versés avant une date de bascule
+       * (revenus 2025 : 1 000 € avant le 14/10/2025, 2 000 € au total ensuite).
+       */
+      avantBascule?: { date: string; plafond: number };
+    };
     scolarite: { college: number; lycee: number; superieur: number };
     ehpad: { taux: number; plafondParPersonne: number };
     denormandie: { prixMax: number; taux: Record<6 | 9 | 12, number> };
@@ -243,7 +253,13 @@ export const PARAMS_2025: ParamsFiscaux = {
     cotisationsSyndicales: { taux: 0.66 },
   },
   reductions: {
-    dons: { taux75: 0.75, plafond75: 1000, taux66: 0.66, plafondRevenu: 0.2 },
+    dons: {
+      taux75: 0.75,
+      plafond75: 2000,
+      taux66: 0.66,
+      plafondRevenu: 0.2,
+      avantBascule: { date: "14 octobre 2025", plafond: 1000 },
+    },
     scolarite: { college: 61, lycee: 153, superieur: 183 },
     ehpad: { taux: 0.25, plafondParPersonne: 10000 },
     denormandie: { prixMax: 300000, taux: { 6: 0.12, 9: 0.18, 12: 0.21 } },
@@ -309,6 +325,10 @@ export const PARAMS_2026: ParamsFiscaux = {
     meubleTourismeNonClasse: { taux: 0.3, seuil: 15000 },
   },
   per: { pass: 47100 },
+  reductions: {
+    ...PARAMS_2025.reductions,
+    dons: { taux75: 0.75, plafond75: 2000, taux66: 0.66, plafondRevenu: 0.2 },
+  },
 };
 
 export const PARAMS: Record<Annee, ParamsFiscaux> = { 2025: PARAMS_2025, 2026: PARAMS_2026 };

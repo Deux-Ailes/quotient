@@ -119,6 +119,15 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
             onChange={(v) => maj((d) => void (d.reductions.dons75 = v))}
             hint={`Restos du cœur, Secours populaire… 75 % jusqu'à ${formatEur(p.reductions.dons.plafond75)}, puis 66 %.`}
           />
+          {p.reductions.dons.avantBascule && foyer.reductions.dons75 > 0 && (
+            <NumberField
+              label={`dont dons versés avant le ${p.reductions.dons.avantBascule.date}`}
+              value={foyer.reductions.dons75AvantBascule}
+              max={foyer.reductions.dons75}
+              onChange={(v) => maj((d) => void (d.reductions.dons75AvantBascule = Math.min(v, d.reductions.dons75)))}
+              hint={`Plafond de ${formatEur(p.reductions.dons.avantBascule.plafond)} pour ces dons, ${formatEur(p.reductions.dons.plafond75)} au total sur l'année.`}
+            />
+          )}
           <NumberField
             label="Autres associations d'intérêt général"
             value={foyer.reductions.dons66}

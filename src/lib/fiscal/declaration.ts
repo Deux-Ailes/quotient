@@ -318,7 +318,15 @@ export function detailDeclaration(f: Foyer, r: Resultat): SectionDecl[] {
   const rc: LigneDecl[] = [];
   const rd = p.reductions;
   if (f.reductions.dons75 > 0) {
-    rc.push({ case: CASES.dons75, libelle: "Dons aux organismes d'aide aux personnes en difficulté", valeur: formatEur(f.reductions.dons75), calcul: `75 % jusqu'à ${formatEur(rd.dons.plafond75)}, 66 % au-delà` });
+    const b = rd.dons.avantBascule;
+    rc.push({
+      case: b ? { ...CASES.dons75, aVerifier: true } : CASES.dons75,
+      libelle: "Dons aux organismes d'aide aux personnes en difficulté",
+      valeur: formatEur(f.reductions.dons75),
+      calcul: b
+        ? `75 % jusqu'à ${formatEur(rd.dons.plafond75)} (dont ${formatEur(b.plafond)} au plus pour les dons d'avant le ${b.date}), 66 % au-delà`
+        : `75 % jusqu'à ${formatEur(rd.dons.plafond75)}, 66 % au-delà`,
+    });
   }
   if (f.reductions.dons66 > 0) {
     rc.push({ case: CASES.dons66, libelle: "Autres dons", valeur: formatEur(f.reductions.dons66), calcul: "66 %, dans la limite de 20 % du revenu imposable" });

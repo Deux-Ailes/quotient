@@ -366,9 +366,16 @@ export function simuler(foyer: Foyer): Resultat {
 
   /* --- Réductions d'impôt (non remboursables) --- */
   const rd = p.reductions;
-  const dons75 = Math.min(pos(foyer.reductions.dons75), rd.dons.plafond75);
+  // Dons à 75 % : en année de transition, la part versée avant la bascule garde l'ancien plafond.
+  const dons75Total = pos(foyer.reductions.dons75);
+  const bascule = rd.dons.avantBascule;
+  const dons75Eligibles = bascule
+    ? Math.min(pos(foyer.reductions.dons75AvantBascule), dons75Total, bascule.plafond) +
+      Math.max(0, dons75Total - pos(foyer.reductions.dons75AvantBascule))
+    : dons75Total;
+  const dons75 = Math.min(dons75Eligibles, rd.dons.plafond75);
   const dons66Base = Math.min(
-    pos(foyer.reductions.dons66) + pos(foyer.reductions.dons75) - dons75,
+    pos(foyer.reductions.dons66) + dons75Total - dons75,
     revenuNetImposable * rd.dons.plafondRevenu,
   );
   const dons = arrondi(dons75 * rd.dons.taux75 + dons66Base * rd.dons.taux66);

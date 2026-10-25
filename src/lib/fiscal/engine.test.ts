@@ -202,10 +202,21 @@ describe("réductions et crédits", () => {
     f.enfants[0].fraisGarde = 2000;
     expect(simuler(f).impotNet).toBe(-1000);
   });
-  it("dons : 75 % jusqu'au plafond puis 66 %", () => {
+  it("dons 2026 : 75 % jusqu'à 2 000 € puis 66 %", () => {
     const f = celibataire(50000);
+    f.reductions.dons75 = 2500;
+    expect(simuler(f).reductions.dons).toBe(Math.round(2000 * 0.75 + 500 * 0.66));
+  });
+  it("dons 2025 : 1 000 € au plus pour les dons d'avant le 14 octobre", () => {
+    const f = celibataire(50000, 2025);
     f.reductions.dons75 = 1500;
+    f.reductions.dons75AvantBascule = 1500;
     expect(simuler(f).reductions.dons).toBe(Math.round(1000 * 0.75 + 500 * 0.66));
+    f.reductions.dons75AvantBascule = 500;
+    expect(simuler(f).reductions.dons).toBe(Math.round(1500 * 0.75));
+    f.reductions.dons75 = 3000;
+    f.reductions.dons75AvantBascule = 0;
+    expect(simuler(f).reductions.dons).toBe(Math.round(2000 * 0.75 + 1000 * 0.66));
   });
   it("seuil de recouvrement de 61 €", () => {
     const f = celibataire(16000);

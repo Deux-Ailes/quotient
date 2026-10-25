@@ -128,6 +128,8 @@ export interface Foyer {
 
   reductions: {
     dons75: number;
+    /** Part des dons à 75 % versée avant la date de bascule (année de transition uniquement). */
+    dons75AvantBascule: number;
     dons66: number;
     emploiDomicile: { depenses: number; premiereAnnee: boolean };
     ehpad: number[];
