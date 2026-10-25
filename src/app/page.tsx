@@ -23,6 +23,7 @@ import { SiteFooter, SiteHeader } from "@/components/SiteHeader";
 import { simuler } from "@/lib/fiscal/engine";
 import { foyerExemple } from "@/lib/fiscal/exemple";
 import { PARAMS, ANNEE_DEFAUT } from "@/lib/fiscal/params";
+import { chemin } from "@/lib/chemin";
 import { formatEur, formatNombre, formatPct } from "@/lib/format";
 
 const CTA = "Lancer ma simulation";
@@ -215,7 +216,7 @@ export default function LandingPage() {
             {(["clair", "sombre"] as const).map((theme) => (
               <Image
                 key={theme}
-                src={theme === "clair" ? "/apercu-frais-reels.png" : "/apercu-frais-reels-sombre.png"}
+                src={chemin(theme === "clair" ? "/apercu-frais-reels.png" : "/apercu-frais-reels-sombre.png")}
                 alt="Étape Frais réels du simulateur : comparaison entre l'abattement de 10 % et les frais réels de Camille, avec l'impôt estimé en direct."
                 width={2560}
                 height={1720}

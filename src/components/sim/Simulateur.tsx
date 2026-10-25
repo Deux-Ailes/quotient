@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, CaretUp as ChevronUp } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "@/components/Logo";
+import { chemin } from "@/lib/chemin";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { simuler, type Resultat } from "@/lib/fiscal/engine";
 import { PARAMS, type Annee } from "@/lib/fiscal/params";
@@ -159,7 +160,8 @@ export function Simulateur() {
         {exemple && (
           <p className="mt-6 rounded-2xl bg-brand-50 px-4 py-3 text-sm text-ink-soft print:hidden">
             <strong className="text-ink">Foyer d&apos;exemple.</strong> Vos modifications ne sont pas enregistrées.{" "}
-            <a href="/simulateur" className="font-semibold text-brand underline-offset-2 hover:underline">
+            {/* Lien HTML classique, pas <Link> : le rechargement complet quitte le mode exemple. */}
+            <a href={chemin("/simulateur/")} className="font-semibold text-brand underline-offset-2 hover:underline">
               Commencer avec mes chiffres
             </a>
           </p>
