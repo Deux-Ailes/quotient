@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Bricolage_Grotesque } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { SCRIPT_THEME } from "@/lib/theme";
 import { IMAGE_PARTAGE, SITE, SITE_URL } from "@/lib/site";
 
-const jakarta = Plus_Jakarta_Sans({
+// Polices hébergées dans le projet (src/fonts, licence SIL OFL, source Fontsource) : le build ne dépend
+// plus de Google Fonts. Fichiers variables, sous-ensemble latin (accents français compris).
+const jakarta = localFont({
+  src: "../fonts/plus-jakarta-sans-latin-wght-normal.woff2",
   variable: "--font-jakarta",
-  subsets: ["latin"],
+  weight: "200 800",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
-const display = Bricolage_Grotesque({
+const display = localFont({
+  src: "../fonts/bricolage-grotesque-latin-wght-normal.woff2",
   variable: "--font-bricolage",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: "200 800",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
