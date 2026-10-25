@@ -177,7 +177,8 @@ export function Simulateur() {
         <div className={`mt-8 grid items-start gap-8 ${derniere ? "" : "lg:grid-cols-[1fr_340px]"}`}>
           <div key={`${etape}-${charge}`} className="min-w-0">
             <div className="animate-fade-up mb-6">
-              <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">{ETAPES[etape].titre}</h1>
+              <h1 className="text-sm font-semibold text-brand">Simulateur d&apos;impôt sur le revenu et de frais réels</h1>
+              <h2 className="mt-1 font-display text-3xl font-bold tracking-tight sm:text-4xl">{ETAPES[etape].titre}</h2>
               <p className="mt-1 text-ink-soft">{ETAPES[etape].sousTitre}</p>
             </div>
 

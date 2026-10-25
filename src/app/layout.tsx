@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { SCRIPT_THEME } from "@/lib/theme";
+import { IMAGE_PARTAGE, SITE, SITE_URL } from "@/lib/site";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -15,9 +16,26 @@ const display = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "Quotient | Simulateur d'impôt sur le revenu",
-  description:
-    "Estimez votre impôt sur le revenu en quelques minutes : quotient familial, frais réels (kilomètres, repas, télétravail), réductions et crédits d'impôt, taux de prélèvement à la source.",
+  // Les URL relatives (canonical, image de partage) sont résolues par rapport à l'adresse publique du site.
+  metadataBase: new URL(`${SITE_URL}/`),
+  title: SITE.accueil.titre,
+  description: SITE.accueil.description,
+  applicationName: SITE.nom,
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: SITE.nom,
+    title: SITE.accueil.titre,
+    description: SITE.accueil.description,
+    url: "/",
+    images: [IMAGE_PARTAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE.accueil.titre,
+    description: SITE.accueil.description,
+    images: [IMAGE_PARTAGE.url],
+  },
 };
 
 export default function RootLayout({

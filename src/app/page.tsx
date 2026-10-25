@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -24,6 +25,7 @@ import { simuler } from "@/lib/fiscal/engine";
 import { foyerExemple } from "@/lib/fiscal/exemple";
 import { PARAMS, ANNEE_DEFAUT } from "@/lib/fiscal/params";
 import { chemin } from "@/lib/chemin";
+import { SITE, SITE_URL } from "@/lib/site";
 import { formatEur, formatNombre, formatPct } from "@/lib/format";
 
 const CTA = "Lancer ma simulation";
@@ -88,6 +90,47 @@ function BoutonPrincipal({ className = "" }: { className?: string }) {
   );
 }
 
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+/** Données structurées schema.org : le site, l'application web gratuite et la FAQ de la page. */
+function donneesStructurees() {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#site`,
+        name: SITE.nom,
+        url: `${SITE_URL}/`,
+        inLanguage: "fr-FR",
+      },
+      {
+        "@type": "WebApplication",
+        "@id": `${SITE_URL}/#application`,
+        name: `${SITE.nom}, simulateur d'impôt sur le revenu`,
+        url: `${SITE_URL}/simulateur/`,
+        description: SITE.accueil.description,
+        applicationCategory: "FinanceApplication",
+        operatingSystem: "Web",
+        inLanguage: "fr-FR",
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+        isPartOf: { "@id": `${SITE_URL}/#site` },
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: FAQ.map(({ q, r }) => ({
+          "@type": "Question",
+          name: q,
+          acceptedAnswer: { "@type": "Answer", text: r },
+        })),
+      },
+    ],
+  };
+}
+
 export default function LandingPage() {
   const { r, economie } = exemple();
   const params = PARAMS[ANNEE_DEFAUT];
@@ -97,6 +140,7 @@ export default function LandingPage() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(donneesStructurees()) }} />
       <SiteHeader cta={CTA} />
       <main>
         {/* Hero */}
@@ -108,8 +152,11 @@ export default function LandingPage() {
                 {params.libelle}
                 {params.provisoire && <span className="font-medium text-ink-muted">· barème provisoire</span>}
               </span>
-              <h1 className="mt-6 font-display text-5xl leading-[1.04] font-bold tracking-tight text-ink sm:text-6xl">
-                Votre impôt, <span className="text-brand">enfin lisible.</span>
+              <h1 className="mt-6 font-display font-bold tracking-tight text-ink">
+                <span className="block text-lg leading-snug font-semibold text-ink-soft sm:text-xl">Simulateur d&apos;impôt 2026 et de frais réels</span>
+                <span className="mt-2 block text-5xl leading-[1.04] sm:text-6xl">
+                  Votre impôt, <span className="text-brand">enfin lisible.</span>
+                </span>
               </h1>
               <p className="mt-6 max-w-lg text-lg leading-relaxed text-ink-soft">
                 Estimez votre impôt en cinq minutes. Kilomètres, télétravail, garde d&apos;enfants : Quotient retient l&apos;option la plus
@@ -216,10 +263,10 @@ export default function LandingPage() {
             {(["clair", "sombre"] as const).map((theme) => (
               <Image
                 key={theme}
-                src={chemin(theme === "clair" ? "/apercu-frais-reels.png" : "/apercu-frais-reels-sombre.png")}
+                src={chemin(theme === "clair" ? "/apercu-frais-reels.webp" : "/apercu-frais-reels-sombre.webp")}
                 alt="Étape Frais réels du simulateur : comparaison entre l'abattement de 10 % et les frais réels de Camille, avec l'impôt estimé en direct."
-                width={2560}
-                height={1720}
+                width={2000}
+                height={1344}
                 sizes="(min-width: 1152px) 1104px, 100vw"
                 className={`image-theme-${theme} aspect-[16/9] w-full object-cover object-top`}
               />
