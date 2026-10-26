@@ -53,6 +53,10 @@ export interface ParamsFiscaux {
   fraisReels: {
     plafondDistanceKm: number;
     majorationElectrique: number;
+    /**
+     * Valeur du repas pris au foyer (brochure pratique) et prix retenu au plus : limite d'exonération
+     * des indemnités de repas des salariés en déplacement, appliquée en pratique par l'administration.
+     */
     repas: { valeurForfaitaire: number; plafond: number };
     /**
      * Forfait télétravail (limite d'exonération des allocations employeur, admise en frais réels).
@@ -201,7 +205,7 @@ export const PARAMS_2025: ParamsFiscaux = {
   notes: [
     "Barème, décote et plafonds du quotient familial : loi de finances 2026 (revalorisation de 0,9 %).",
     "Barème kilométrique gelé depuis les revenus 2022.",
-    "Forfait télétravail : 2,70 €/jour (59,40 €/mois, 626,40 €/an), dernier montant officiel publié (revenus 2024).",
+    "Forfait télétravail : 2,70 €/jour (59,40 €/mois, 626,40 €/an), confirmé par la brochure pratique 2026.",
   ],
   bareme: [
     { jusqua: 11600, taux: 0 },
@@ -214,7 +218,7 @@ export const PARAMS_2025: ParamsFiscaux = {
   quotientFamilial: { demiPart: 1807, parentIsole: 4262, caseL: 1079, invalide: 3608 },
   seuilRecouvrement: 61,
   abattementSalaires: { taux: 0.1, min: 509, max: 14555 },
-  abattementPensions: { taux: 0.1, min: 446, maxFoyer: 4439 },
+  abattementPensions: { taux: 0.1, min: 454, maxFoyer: 4439 },
   abattementAge: { seuil1: 17670, montant1: 2822, seuil2: 28430, montant2: 1411 },
   pensionAlimentaireEnfantMajeur: 6855,
   fraisReels: {
@@ -302,7 +306,7 @@ export const PARAMS_2026: ParamsFiscaux = {
     invalide: idx(PARAMS_2025.quotientFamilial.invalide),
   },
   abattementSalaires: { taux: 0.1, min: idx(509), max: idx(14555) },
-  abattementPensions: { taux: 0.1, min: idx(446), maxFoyer: idx(4439) },
+  abattementPensions: { taux: 0.1, min: idx(454), maxFoyer: idx(4439) },
   abattementAge: {
     seuil1: idx(17670),
     montant1: idx(2822),

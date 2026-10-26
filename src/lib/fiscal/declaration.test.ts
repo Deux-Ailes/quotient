@@ -29,6 +29,21 @@ describe("détail de la déclaration", () => {
     expect(Math.abs(somme - Math.round(r.qf.impotBrut))).toBeLessThanOrEqual(2);
   });
 
+  it("dons 2025 : 7UD avant le 14 octobre, 7UQ après ; 2026 : 7UD seule", () => {
+    const f = foyerParDefaut();
+    f.adultes[0].salaires = 40000;
+    f.annee = 2025;
+    f.reductions.dons75 = 1500;
+    f.reductions.dons75AvantBascule = 600;
+    let c = Object.fromEntries(cases(detailDeclaration(f, simuler(f))));
+    expect(c["7UD"]).toBe("600 €");
+    expect(c["7UQ"]).toBe("900 €");
+    f.annee = 2026;
+    c = Object.fromEntries(cases(detailDeclaration(f, simuler(f))));
+    expect(c["7UD"]).toBe("1 500 €");
+    expect(c["7UQ"]).toBeUndefined();
+  });
+
   it("garde alternée et scolarité : cases dédiées", () => {
     const f = foyerParDefaut();
     f.adultes[0].salaires = 40000;

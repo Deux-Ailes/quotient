@@ -72,7 +72,7 @@ export function BlocDeclaration({ foyer, r }: { foyer: Foyer; r: Resultat }) {
         </span>
         {aVerifier && (
           <span className="inline-flex items-center gap-2">
-            <span className="inline-flex h-5 items-center rounded-full bg-amber-50 px-2 font-mono font-semibold text-amber ring-1 ring-amber/30">5NJ ?</span>
+            <span className="inline-flex h-5 items-center rounded-full bg-amber-50 px-2 font-mono font-semibold text-amber ring-1 ring-amber/30">7UQ ?</span>
             numéro à confirmer sur votre déclaration
           </span>
         )}

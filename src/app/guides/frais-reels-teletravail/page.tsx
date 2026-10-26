@@ -81,8 +81,8 @@ export default function GuideTeletravail() {
       <h2>Méthode 1 : le forfait journalier</h2>
       <p>
         L&apos;administration admet une évaluation forfaitaire de <strong>{formatEurCents(tt.parJour)} par jour de télétravail</strong>, dans la limite de{" "}
-        {formatEurCents(tt.plafondMensuel)} par mois et {formatEurCents(tt.plafondAnnuel)} par an. C&apos;est le dernier montant officiel publié, pour les
-        revenus 2024. Il couvre les frais de local, d&apos;énergie et de connexion, sans justificatif de dépenses : il suffit de pouvoir prouver les jours
+        {formatEurCents(tt.plafondMensuel)} par mois et {formatEurCents(tt.plafondAnnuel)} par an. Ce montant est confirmé pour les revenus 2025 par la
+        brochure pratique 2026. Il couvre les frais de local, d&apos;énergie et de connexion, sans justificatif de dépenses : il suffit de pouvoir prouver les jours
         télétravaillés (accord ou attestation de l&apos;employeur).
       </p>
       <p>

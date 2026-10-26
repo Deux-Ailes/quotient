@@ -2,9 +2,9 @@
  * Numéros de cases de la déclaration des revenus (formulaires 2042, 2042-C, 2042-C-PRO, 2042-RICI),
  * numérotation de la déclaration 2026 (revenus 2025).
  *
- * Non vérifiés sur la brochure officielle (impots.gouv.fr indisponible au moment de la rédaction) :
- * les cases marquées `aVerifier` sont les moins sûres. La numérotation peut changer d'une année sur
- * l'autre : à revoir chaque printemps sur la notice 2042.
+ * Vérifiés sur la brochure pratique 2026 d'impots.gouv.fr. Le drapeau `aVerifier` signale une case
+ * incertaine. La numérotation peut changer d'une année sur l'autre : à revoir chaque printemps sur la
+ * notice 2042.
  */
 
 export interface CaseDecl {
@@ -37,9 +37,9 @@ export const CASES = {
   microVente: [c("5KO"), c("5LO")] as ParDeclarant,
   microServices: [c("5KP"), c("5LP")] as ParDeclarant,
   microBnc: [c("5HQ"), c("5IQ")] as ParDeclarant,
-  meubleLongueDuree: [c("5NJ", true), c("5OJ", true)] as ParDeclarant,
-  meubleTourismeClasse: [c("5NG", true), c("5OG", true)] as ParDeclarant,
-  meubleTourismeNonClasse: [c("5ND", true), c("5OD", true)] as ParDeclarant,
+  meubleLongueDuree: [c("5NI"), c("5OI")] as ParDeclarant,
+  meubleTourismeClasse: [c("5NG"), c("5OG")] as ParDeclarant,
+  meubleTourismeNonClasse: [c("5NH"), c("5OH")] as ParDeclarant,
 
   foncierMicro: c("4BE"),
   foncierBenefice: c("4BA"),
@@ -52,9 +52,11 @@ export const CASES = {
   per: [c("6NS"), c("6NT")] as ParDeclarant,
   pensionEnfantsMajeursNombre: c("6EL"),
   pensionEnfantsMajeursMontant: c("6EM"),
-  pensionAutres: c("6GU", true),
+  pensionAutres: c("6GU"),
 
   dons75: c("7UD"),
+  /** Revenus 2025 : dons à 75 % versés à partir du 14 octobre. */
+  dons75ApresBascule: c("7UQ"),
   dons66: c("7UF"),
   scolarite: {
     college: [c("7EA"), c("7EB")] as [CaseDecl, CaseDecl],
@@ -62,8 +64,8 @@ export const CASES = {
     superieur: [c("7EF"), c("7EG")] as [CaseDecl, CaseDecl],
   },
   ehpad: [c("7CD"), c("7CE")] as ParDeclarant,
-  pinel: c("2042-RICI", true),
-  denormandie: c("2042-RICI", true),
+  pinel: c("2042-RICI"),
+  denormandie: c("2042-RICI"),
   gardeEnfant: [c("7GA"), c("7GB"), c("7GC")],
   gardeEnfantAlterne: [c("7GE"), c("7GF"), c("7GG")],
   emploiDomicile: c("7DB"),

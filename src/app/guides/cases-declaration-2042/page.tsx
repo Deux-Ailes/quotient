@@ -81,7 +81,7 @@ const SECTIONS: { titre: string; intro?: ReactNode; lignes: Ligne[] }[] = [
       { cases: paire(CASES.microVente), quoi: "Micro-BIC : vente de marchandises, abattement de 71 %." },
       { cases: paire(CASES.microServices), quoi: "Micro-BIC : prestations de services, abattement de 50 %." },
       { cases: paire(CASES.microBnc), quoi: "Micro-BNC : professions libérales, abattement de 34 %." },
-      { cases: paire(CASES.meubleLongueDuree), quoi: "Location meublée de longue durée au micro-BIC." },
+      { cases: paire(CASES.meubleLongueDuree), quoi: "Location meublée de longue durée au micro-BIC (hors locations soumises aux cotisations sociales, cases 5NJ à 5NL)." },
       { cases: paire(CASES.meubleTourismeClasse), quoi: "Meublé de tourisme classé ou chambre d'hôtes au micro-BIC." },
       { cases: paire(CASES.meubleTourismeNonClasse), quoi: "Meublé de tourisme non classé au micro-BIC." },
     ],
@@ -101,7 +101,8 @@ const SECTIONS: { titre: string; intro?: ReactNode; lignes: Ligne[] }[] = [
     titre: "Réductions et crédits d'impôt",
     intro: "Les réductions diminuent l'impôt jusqu'à zéro ; les crédits sont remboursés même si vous ne payez pas d'impôt.",
     lignes: [
-      { cases: [CASES.dons75], quoi: "Dons aux organismes d'aide aux personnes en difficulté : réduction de 75 % dans la limite du plafond, puis 66 %." },
+      { cases: [CASES.dons75], quoi: "Dons aux organismes d'aide aux personnes en difficulté : réduction de 75 % dans la limite du plafond, puis 66 %. Pour 2025, cette case ne reçoit que les dons versés jusqu'au 13 octobre (1 000 € au plus à 75 %)." },
+      { cases: [CASES.dons75ApresBascule], quoi: "Revenus 2025 : mêmes dons versés du 14 octobre au 31 décembre. Le plafond à 75 % passe à 2 000 €, dons d'avant le 14 octobre compris." },
       { cases: [CASES.dons66], quoi: "Autres dons aux associations d'intérêt général : réduction de 66 %, dans la limite de 20 % du revenu imposable." },
       { cases: CASES.gardeEnfant, quoi: "Frais de garde hors du domicile des enfants de moins de 6 ans, un enfant par case : crédit de 50 %." },
       { cases: CASES.gardeEnfantAlterne, quoi: "Même chose pour les enfants en résidence alternée (plafond divisé par deux)." },
@@ -156,7 +157,7 @@ export default function GuideCases() {
     >
       <p className="encadre">
         Numérotation de la déclaration 2026 (revenus 2025). Les numéros peuvent évoluer d&apos;une année sur l&apos;autre : vérifiez-les sur votre
-        déclaration. Les cases suivies d&apos;un <strong>?</strong> sont celles que nous n&apos;avons pas pu confirmer sur la notice officielle.
+        déclaration. Chaque numéro a été contrôlé sur la brochure pratique 2026 d&apos;impots.gouv.fr.
       </p>
 
       {SECTIONS.map((s) => (

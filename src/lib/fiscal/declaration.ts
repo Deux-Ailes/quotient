@@ -319,14 +319,30 @@ export function detailDeclaration(f: Foyer, r: Resultat): SectionDecl[] {
   const rd = p.reductions;
   if (f.reductions.dons75 > 0) {
     const b = rd.dons.avantBascule;
-    rc.push({
-      case: b ? { ...CASES.dons75, aVerifier: true } : CASES.dons75,
-      libelle: "Dons aux organismes d'aide aux personnes en difficulté",
-      valeur: formatEur(f.reductions.dons75),
-      calcul: b
-        ? `75 % jusqu'à ${formatEur(rd.dons.plafond75)} (dont ${formatEur(b.plafond)} au plus pour les dons d'avant le ${b.date}), 66 % au-delà`
-        : `75 % jusqu'à ${formatEur(rd.dons.plafond75)}, 66 % au-delà`,
-    });
+    const libelle = "Dons aux organismes d'aide aux personnes en difficulté";
+    if (b) {
+      // Année de transition : deux cases selon la date du versement.
+      const avant = Math.min(f.reductions.dons75AvantBascule, f.reductions.dons75);
+      const apres = f.reductions.dons75 - avant;
+      if (avant > 0) {
+        rc.push({
+          case: CASES.dons75,
+          libelle: `${libelle}, versés avant le ${b.date}`,
+          valeur: formatEur(avant),
+          calcul: `75 % dans la limite de ${formatEur(b.plafond)}, 66 % au-delà`,
+        });
+      }
+      if (apres > 0) {
+        rc.push({
+          case: CASES.dons75ApresBascule,
+          libelle: `${libelle}, versés à partir du ${b.date}`,
+          valeur: formatEur(apres),
+          calcul: `75 % jusqu'à ${formatEur(rd.dons.plafond75)} au total avec les dons d'avant le ${b.date}, 66 % au-delà`,
+        });
+      }
+    } else {
+      rc.push({ case: CASES.dons75, libelle, valeur: formatEur(f.reductions.dons75), calcul: `75 % jusqu'à ${formatEur(rd.dons.plafond75)}, 66 % au-delà` });
+    }
   }
   if (f.reductions.dons66 > 0) {
     rc.push({ case: CASES.dons66, libelle: "Autres dons", valeur: formatEur(f.reductions.dons66), calcul: "66 %, dans la limite de 20 % du revenu imposable" });
