@@ -20,6 +20,8 @@ concurrency:
 
 env:
   NEXT_TELEMETRY_DISABLED: 1
+  # Clé IndexNow (publique par conception) : le fichier public/<clé>.txt prouve la propriété du site.
+  INDEXNOW_KEY: fa3fa270158ff024d7e53d6c8776333b
 
 jobs:
   build:
@@ -66,3 +68,20 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+      # Signale les pages du sitemap à Bing (et Yandex, Seznam…) ; Google n'utilise pas IndexNow.
+      # Un échec ici n'annule pas le déploiement.
+      - name: Signalement des pages (IndexNow)
+        continue-on-error: true
+        env:
+          SITE: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          URLS=$(curl -fsS "${SITE}sitemap.xml" | grep -oE '<loc>[^<]+</loc>' | sed -E 's#</?loc>##g' | jq -R . | jq -sc .)
+          HOST=$(echo "$SITE" | sed -E 's#^https?://([^/]+)/.*#\1#')
+          BODY=$(jq -nc --arg host "$HOST" --arg key "$INDEXNOW_KEY" --arg loc "${SITE}${INDEXNOW_KEY}.txt" \
+            --argjson urls "$URLS" '{host: $host, key: $key, keyLocation: $loc, urlList: $urls}')
+          CODE=$(curl -sS -o reponse.txt -w '%{http_code}' -X POST https://api.indexnow.org/indexnow \
+            -H 'Content-Type: application/json; charset=utf-8' -d "$BODY")
+          echo "IndexNow : HTTP $CODE pour $(echo "$URLS" | jq length) URL"
+          cat reponse.txt
+          case "$CODE" in 200|202) ;; *) exit 1 ;; esac

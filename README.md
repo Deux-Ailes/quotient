@@ -1,8 +1,17 @@
-# Quotient
+# Quotient : simulateur d'impôt sur le revenu et de frais réels
 
-Simulateur d'impôt sur le revenu pour les particuliers en France : landing page + assistant en 5 étapes
-(foyer, revenus, frais réels, déductions, résultat). Tous les calculs sont faits dans le navigateur, et le brouillon
-est conservé en `localStorage`.
+**Utiliser le simulateur : [deux-ailes.github.io/quotient](https://deux-ailes.github.io/quotient/)**
+
+Simulateur gratuit et open source de l'impôt sur le revenu pour les particuliers en France (revenus 2026 et 2025).
+Tous les calculs sont faits dans le navigateur : aucun compte, aucune donnée envoyée.
+
+- **Frais réels** : barème kilométrique officiel (voiture, moto, électrique +20 %, plafond de 40 km), repas,
+  télétravail au forfait ou au réel (prorata de surface, énergies selon les jours télétravaillés), matériel amorti
+- **Comparaison automatique** frais réels / abattement de 10 % pour chaque déclarant
+- **Quotient familial** plafonné, décote, réductions et crédits d'impôt (garde d'enfants, emploi à domicile, dons, PER…)
+- **Détail complet du calcul** avec les cases de la déclaration 2042 (1AJ, 1AK, 7GA…)
+- **Justificatif des frais réels** prêt à coller sur impots.gouv.fr
+- Taux de prélèvement à la source, foyer et individualisé
 
 ## Démarrer
 
@@ -20,9 +29,21 @@ npm run build
 | `src/lib/fiscal/params.ts` | **Tous les paramètres fiscaux** par année de revenus (barème, décote, QF, plafonds, barème km…) |
 | `src/lib/fiscal/engine.ts` | Moteur : revenus catégoriels, quotient familial plafonné, décote, réductions, crédits, CEHR, PAS |
 | `src/lib/fiscal/fraisReels.ts` | Frais kilométriques, repas, télétravail, matériel amorti |
-| `src/lib/fiscal/engine.test.ts` | Cas de référence calculés à la main |
+| `src/lib/fiscal/cases.ts` | Numéros de cases de la déclaration 2042 |
+| `src/lib/fiscal/declaration.ts` | Détail complet du calcul, case par case |
+| `src/lib/fiscal/resumeFraisReels.ts` | Justificatif des frais réels à copier-coller |
+| `src/lib/fiscal/*.test.ts` | Cas de référence calculés à la main |
+| `src/lib/site.ts` | URL publique, titres et descriptions (SEO) |
 | `src/app/page.tsx` | Landing page (l'exemple affiché est calculé par le vrai moteur) |
 | `src/components/sim/` | Assistant de simulation |
+
+## Déploiement
+
+Le site est un export statique publié sur GitHub Pages par `.github/workflows/deploy.yml` à chaque push sur
+`master` (tests, build, publication, puis signalement des pages à Bing via IndexNow). Les pull requests sont
+testées et construites sans être publiées.
+
+Pour un nom de domaine propre, définir `NEXT_PUBLIC_SITE_URL` (et `NEXT_PUBLIC_BASE_PATH` vide) dans le workflow.
 
 ## Mettre à jour les paramètres
 
