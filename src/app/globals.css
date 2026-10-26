@@ -151,3 +151,105 @@ input[type="number"] {
     transition: none !important;
   }
 }
+
+/* Corps des guides : styles appliqués aux enfants directs uniquement (les encarts gardent leur propre style). */
+.prose-guide {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+}
+.prose-guide > * + * {
+  margin-top: 1.1em;
+}
+.prose-guide > h2 {
+  margin-top: 2.4em;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  scroll-margin-top: 5rem;
+}
+.prose-guide > h3 {
+  margin-top: 1.8em;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.prose-guide > h2 + *,
+.prose-guide > h3 + * {
+  margin-top: 0.6em;
+}
+.prose-guide strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.prose-guide a:not(.not-prose a) {
+  color: var(--color-brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-guide > ul,
+.prose-guide > ol {
+  padding-left: 1.4em;
+}
+.prose-guide > ul {
+  list-style: disc;
+}
+.prose-guide > ol {
+  list-style: decimal;
+}
+.prose-guide li + li {
+  margin-top: 0.4em;
+}
+.prose-guide li::marker {
+  color: var(--color-brand);
+}
+.prose-guide > .tableau {
+  overflow-x: auto;
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+}
+.prose-guide table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.prose-guide th,
+.prose-guide td {
+  padding: 0.65rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-line);
+  font-variant-numeric: tabular-nums;
+}
+.prose-guide th {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.prose-guide tr:last-child td {
+  border-bottom: 0;
+}
+.prose-guide td.nombre,
+.prose-guide th.nombre {
+  text-align: right;
+  white-space: nowrap;
+}
+.prose-guide > .encadre {
+  border-left: 3px solid var(--color-brand);
+  background: var(--color-brand-50);
+  border-radius: 0 1rem 1rem 0;
+  padding: 1rem 1.25rem;
+  font-size: 0.98rem;
+}
+.prose-guide > pre {
+  white-space: pre-wrap;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  padding: 1.1rem 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--color-ink);
+}

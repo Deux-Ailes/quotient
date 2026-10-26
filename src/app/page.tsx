@@ -21,6 +21,7 @@ import {
   Wallet,
 } from "@phosphor-icons/react/dist/ssr";
 import { SiteFooter, SiteHeader } from "@/components/SiteHeader";
+import { GUIDES } from "@/lib/guides";
 import { simuler } from "@/lib/fiscal/engine";
 import { foyerExemple } from "@/lib/fiscal/exemple";
 import { PARAMS, ANNEE_DEFAUT } from "@/lib/fiscal/params";
@@ -418,6 +419,27 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+        </section>
+
+        {/* Guides */}
+        <section id="guides" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-24 sm:px-6">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-display text-4xl font-bold tracking-tight">Guides pratiques</h2>
+            <Link href="/guides/" className="inline-flex items-center gap-1.5 font-semibold text-brand transition-all hover:gap-2.5">
+              Tous les guides <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          <ul className="mt-8 divide-y divide-line border-y border-line">
+            {GUIDES.map((g) => (
+              <li key={g.slug}>
+                <Link href={`/guides/${g.slug}/`} className="group grid gap-2 py-6 md:grid-cols-[1fr_1.4fr_auto] md:items-center md:gap-8">
+                  <span className="font-semibold group-hover:text-brand">{g.titre}</span>
+                  <span className="text-sm leading-relaxed text-ink-soft">{g.resume}</span>
+                  <ArrowRight className="hidden size-5 text-brand transition group-hover:translate-x-1 md:block" weight="bold" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* FAQ */}

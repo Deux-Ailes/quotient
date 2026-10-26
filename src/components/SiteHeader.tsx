@@ -8,19 +8,20 @@ export function SiteHeader({ cta }: { cta: string }) {
     <header className="sticky top-0 z-40 border-b border-line/60 bg-canvas/75 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Logo />
+        {/* Liens absolus : l'en-tête est aussi affiché sur les guides et la page 404. */}
         <nav className="hidden items-center gap-8 text-sm font-medium text-ink-soft md:flex">
-          <a href="#fonctionnement" className="transition hover:text-ink">
+          <Link href="/#fonctionnement" className="transition hover:text-ink">
             Fonctionnement
-          </a>
-          <a href="#couverture" className="transition hover:text-ink">
+          </Link>
+          <Link href="/#couverture" className="transition hover:text-ink">
             Ce qui est calculé
-          </a>
-          <a href="#frais-reels" className="transition hover:text-ink">
-            Frais réels
-          </a>
-          <a href="#faq" className="transition hover:text-ink">
+          </Link>
+          <Link href="/guides/" className="transition hover:text-ink">
+            Guides
+          </Link>
+          <Link href="/#faq" className="transition hover:text-ink">
             FAQ
-          </a>
+          </Link>
         </nav>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -61,6 +62,9 @@ export function SiteFooter() {
             </Link>
             <Link href="/#faq" className="block text-ink-soft hover:text-ink">
               Questions fréquentes
+            </Link>
+            <Link href="/guides/" className="block text-ink-soft hover:text-ink">
+              Guides pratiques
             </Link>
           </div>
           <div className="space-y-2">
