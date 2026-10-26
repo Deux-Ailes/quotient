@@ -28,6 +28,8 @@ export const metadata: Metadata = {
   title: SITE.accueil.titre,
   description: SITE.accueil.description,
   applicationName: SITE.nom,
+  // Propriété Google Search Console (doublée par public/google053fd03ee15c7aa8.html).
+  verification: { google: "ZIoQfyx4LTQc0-D_65plvLI7xBeIs45slzF0BqTLfL8" },
   openGraph: {
     type: "website",
     locale: "fr_FR",
