@@ -19,6 +19,11 @@ interface NumberFieldProps {
 
 export function NumberField({ label, value, onChange, suffix = "€", hint, min = 0, max, step = 1, placeholder = "0" }: NumberFieldProps) {
   const id = useId();
+  // Texte saisi, gardé tel quel : un « 0 » tapé reste affiché au lieu d'être remplacé par le champ vide.
+  const [texte, setTexte] = useState(value === 0 ? "" : String(value));
+  const saisie = parseFloat(texte);
+  // Valeur changée de l'extérieur (exemple chargé, réinitialisation) : on resynchronise l'affichage.
+  if ((Number.isFinite(saisie) ? saisie : 0) !== value) setTexte(value === 0 ? "" : String(value));
   return (
     <div className="space-y-1.5">
       <label htmlFor={id} className="block text-sm font-medium text-ink">
@@ -33,8 +38,9 @@ export function NumberField({ label, value, onChange, suffix = "€", hint, min 
           max={max}
           step={step}
           placeholder={placeholder}
-          value={value === 0 ? "" : value}
+          value={texte}
           onChange={(e) => {
+            setTexte(e.target.value);
             const n = parseFloat(e.target.value);
             onChange(Number.isFinite(n) ? n : 0);
           }}
