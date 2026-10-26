@@ -51,6 +51,7 @@ export default function GuideJustificatif() {
       <p>
         Le montant total se reporte case <strong>1AK</strong> pour le déclarant 1 et <strong>1BK</strong> pour le déclarant 2, dans la rubrique des
         traitements et salaires. Dès que cette case est remplie, l&apos;abattement automatique de 10 % ne s&apos;applique plus pour cette personne.
+        Les autres cases utiles sont détaillées dans le guide <Link href="/guides/cases-declaration-2042/">des cases de la déclaration 2042</Link>.
       </p>
       <p>
         Pensez à vérifier le salaire pré-rempli case <strong>1AJ</strong> ou <strong>1BJ</strong> : si votre employeur vous a versé des indemnités

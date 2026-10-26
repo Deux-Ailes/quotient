@@ -96,8 +96,8 @@ export default function GuideAbattement() {
       <p>Opter pour les frais réels, c&apos;est remplacer l&apos;abattement par la somme de vos dépenses professionnelles justifiées :</p>
       <ul>
         <li>
-          <strong>Trajets domicile-travail</strong> au barème kilométrique, dans la limite de 40 km par trajet sauf circonstances particulières, plus
-          péages et parking.
+          <strong>Trajets domicile-travail</strong> au <Link href="/guides/frais-kilometriques-2026/">barème kilométrique</Link>, dans la limite de 40
+          km par trajet sauf circonstances particulières, plus péages et parking.
         </li>
         <li>
           <strong>Repas</strong> pris sur le lieu de travail, pour la part qui dépasse la valeur d&apos;un repas pris chez soi.

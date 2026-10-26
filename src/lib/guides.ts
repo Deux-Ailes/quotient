@@ -49,6 +49,28 @@ export const GUIDES: Guide[] = [
     misAJour: "2026-10-26",
     lecture: 5,
   },
+  {
+    slug: "frais-kilometriques-2026",
+    titre: "Frais kilométriques 2026 : barème et calcul",
+    titreSEO: "Frais kilométriques 2026 : barème et calcul | Quotient",
+    description:
+      "Barème kilométrique 2026 pour voiture, moto et cyclomoteur, majoration de 20 % en électrique, plafond de 40 km, péages : règles et exemples de calcul.",
+    resume: "Le barème officiel pour chaque véhicule, les règles de distance et des exemples de calcul selon le trajet.",
+    publie: "2026-10-26",
+    misAJour: "2026-10-26",
+    lecture: 6,
+  },
+  {
+    slug: "cases-declaration-2042",
+    titre: "Les cases de la déclaration 2042 expliquées",
+    titreSEO: "Cases de la déclaration 2042 : 1AJ, 1AK, 7GA… | Quotient",
+    description:
+      "Où déclarer salaires, frais réels, pensions, loyers, dividendes, PER, dons, frais de garde : les principales cases de la déclaration de revenus expliquées.",
+    resume: "Salaires, frais réels, loyers, placements, réductions et crédits : où reporter chaque montant.",
+    publie: "2026-10-26",
+    misAJour: "2026-10-26",
+    lecture: 7,
+  },
 ];
 
 export const guide = (slug: string): Guide => {
