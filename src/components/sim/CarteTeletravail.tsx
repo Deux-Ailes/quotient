@@ -47,7 +47,7 @@ export function CarteTeletravail({
   return (
     <Card
       title="Télétravail"
-      icon={<Laptop className="size-5" />}
+      icon={<Laptop aria-hidden className="size-5" />}
       description="Forfait journalier, ou frais réels : quote-part du logement et des énergies au prorata de la surface du bureau."
       action={<span className="tabular text-sm font-semibold text-brand">{formatEur(detail.total)}</span>}
     >
@@ -143,6 +143,7 @@ export function CarteTeletravail({
           <div className="space-y-4">
             <Segmented
               size="sm"
+              ariaLabel="Statut d'occupation du logement"
               value={t.statut}
               onChange={(v) => set((x) => void (x.statut = v))}
               options={[
@@ -275,7 +276,7 @@ export function CarteTeletravail({
             onClick={() => set((x) => void x.equipements.push(nouvelEquipement()))}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-50 px-3.5 py-2 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
           >
-            <Plus className="size-4" /> Ajouter
+            <Plus aria-hidden className="size-4" /> Ajouter
           </button>
         </div>
         {t.equipements.map((e, k) => {
@@ -295,7 +296,7 @@ export function CarteTeletravail({
                     onClick={() => set((x) => void x.equipements.splice(k, 1))}
                     className="grid size-8 place-items-center rounded-full text-ink-muted transition hover:bg-rose/10 hover:text-rose"
                   >
-                    <Trash2 className="size-4" />
+                    <Trash2 aria-hidden className="size-4" />
                   </button>
                 </div>
               </div>

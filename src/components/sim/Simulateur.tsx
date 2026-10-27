@@ -37,21 +37,21 @@ function PanneauLive({ r, onVoir }: { r: Resultat; onVoir: () => void }) {
   return (
     <div className="overflow-hidden rounded-3xl bg-night text-white shadow-lift">
       <div className="bg-brand-gradient p-6">
-        <p className="text-sm text-white/70">{restitution ? "Remboursement estimé" : "Impôt estimé"}</p>
+        <p className="text-sm text-white/90">{restitution ? "Remboursement estimé" : "Impôt estimé"}</p>
         <p className="tabular mt-1 font-display text-4xl font-bold">
           <AnimatedNumber value={Math.abs(r.impotNet)} format={formatEur} />
         </p>
         <div className="mt-4 flex gap-5 text-sm">
           <div>
-            <p className="text-white/60">Taux moyen</p>
+            <p className="text-white/90">Taux moyen</p>
             <p className="tabular font-semibold">{formatPct(r.tauxMoyen)}</p>
           </div>
           <div>
-            <p className="text-white/60">TMI</p>
+            <p className="text-white/90">TMI</p>
             <p className="tabular font-semibold">{formatPct(r.tmi)}</p>
           </div>
           <div>
-            <p className="text-white/60">Taux PAS</p>
+            <p className="text-white/90">Taux PAS</p>
             <p className="tabular font-semibold">{formatPct(r.pas.tauxFoyer)}</p>
           </div>
         </div>
@@ -79,6 +79,24 @@ function PanneauLive({ r, onVoir }: { r: Resultat; onVoir: () => void }) {
   );
 }
 
+/** Annonce le résultat aux lecteurs d'écran, une fois la saisie arrêtée (pas à chaque frappe ni pendant l'animation). */
+function AnnonceResultat({ r }: { r: Resultat }) {
+  const texte = `${r.impotNet < 0 ? "Remboursement estimé" : "Impôt estimé"} : ${formatEur(Math.abs(r.impotNet))}`;
+  const [annonce, setAnnonce] = useState("");
+  const initial = useRef(texte);
+  useEffect(() => {
+    // Rien à l'ouverture : le montant est déjà lisible dans la page.
+    if (texte === initial.current && !annonce) return;
+    const t = setTimeout(() => setAnnonce(texte), 1000);
+    return () => clearTimeout(t);
+  }, [texte, annonce]);
+  return (
+    <p role="status" className="sr-only">
+      {annonce}
+    </p>
+  );
+}
+
 export function Simulateur() {
   const { foyer, maj, reinitialiser, charge, exemple } = useFoyer();
   const [etape, setEtape] = useState(0);
@@ -90,7 +108,7 @@ export function Simulateur() {
   }, []);
   const [adulteActif, setAdulteActif] = useState(0);
   const [panneauMobile, setPanneauMobile] = useState(false);
-  const haut = useRef<HTMLDivElement>(null);
+  const haut = useRef<HTMLElement>(null);
 
   const resultat = useMemo(() => simuler(foyer), [foyer]);
   const params = PARAMS[foyer.annee];
@@ -105,12 +123,13 @@ export function Simulateur() {
   return (
     <div className="min-h-dvh">
       <header className="sticky top-0 z-40 border-b border-line/60 bg-canvas/80 backdrop-blur-xl print:hidden">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
           <Logo />
           <div className="flex items-center gap-2">
             <span className="hidden text-sm text-ink-muted sm:inline">Année</span>
             <Segmented<Annee>
               size="sm"
+              ariaLabel="Année des revenus"
               value={foyer.annee}
               onChange={(v) => maj((d) => void (d.annee = v))}
               options={[
@@ -123,7 +142,7 @@ export function Simulateur() {
         </div>
       </header>
 
-      <div ref={haut} className="mx-auto max-w-7xl scroll-mt-16 px-4 pt-8 pb-36 sm:px-6 lg:pb-16">
+      <main ref={haut} id="contenu" tabIndex={-1} className="mx-auto max-w-7xl scroll-mt-16 px-4 pt-8 pb-36 outline-none sm:px-6 lg:pb-16">
         {/* Progression */}
         <nav aria-label="Étapes" className="print:hidden">
           <ol className="grid grid-cols-5 gap-2">
@@ -137,10 +156,10 @@ export function Simulateur() {
                     <span className="mt-3 hidden items-center gap-2 md:flex">
                       <span
                         className={`grid size-6 shrink-0 place-items-center rounded-full text-xs font-bold transition ${
-                          fait ? "bg-mint text-white" : courant ? "bg-brand text-white" : "bg-surface text-ink-muted ring-1 ring-line"
+                          fait ? "bg-mint text-on-accent" : courant ? "bg-brand text-on-accent" : "bg-surface text-ink-muted ring-1 ring-line"
                         }`}
                       >
-                        {fait ? <Check className="size-3.5" weight="bold" /> : k + 1}
+                        {fait ? <Check aria-hidden className="size-3.5" weight="bold" /> : k + 1}
                       </span>
                       <span>
                         <span className={`block text-sm font-semibold ${courant ? "text-ink" : "text-ink-soft"}`}>{e.titre}</span>
@@ -204,7 +223,7 @@ export function Simulateur() {
                 disabled={etape === 0}
                 className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-ink-soft transition hover:bg-surface hover:text-ink disabled:invisible"
               >
-                <ArrowLeft className="size-4" /> Précédent
+                <ArrowLeft aria-hidden className="size-4" /> Précédent
               </button>
               {!derniere && (
                 <button
@@ -213,7 +232,7 @@ export function Simulateur() {
                   className="bg-brand-gradient group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-lift transition hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 >
                   {etape === ETAPES.length - 2 ? "Voir mon estimation" : "Continuer"}
-                  <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+                  <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-0.5" />
                 </button>
               )}
             </div>
@@ -228,7 +247,9 @@ export function Simulateur() {
             </aside>
           )}
         </div>
-      </div>
+      </main>
+
+      <AnnonceResultat r={resultat} />
 
       {/* Barre mobile */}
       {!derniere && (
@@ -255,7 +276,7 @@ export function Simulateur() {
               <span className="tabular font-display text-xl font-bold">
                 <AnimatedNumber value={Math.abs(resultat.impotNet)} format={formatEur} />
               </span>
-              <ChevronUp className={`size-5 transition ${panneauMobile ? "rotate-180" : ""}`} />
+              <ChevronUp aria-hidden className={`size-5 transition ${panneauMobile ? "rotate-180" : ""}`} />
             </span>
           </button>
         </div>

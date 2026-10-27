@@ -49,15 +49,16 @@ export function StepFrais({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="grid size-10 place-items-center rounded-2xl bg-white/10">
-              <Scale className="size-5" />
+              <Scale aria-hidden className="size-5" />
             </span>
             <div>
               <p className="font-semibold">10 % ou frais réels ?</p>
-              <p className="text-sm text-white/60">{a.prenom || `Déclarant ${i + 1}`}</p>
+              <p className="text-sm text-white/70">{a.prenom || `Déclarant ${i + 1}`}</p>
             </div>
           </div>
           <Segmented
             size="sm"
+            ariaLabel={`Mode de déduction des frais de ${a.prenom || `déclarant ${i + 1}`}`}
             value={a.modeFrais}
             onChange={(v) => maj((d) => void (d.adultes[i].modeFrais = v))}
             options={[
@@ -98,7 +99,7 @@ export function StepFrais({
       {/* Véhicules */}
       <Card
         title="Trajets domicile-travail"
-        icon={<Car className="size-5" />}
+        icon={<Car aria-hidden className="size-5" />}
         description="Barème kilométrique officiel, plafond de 40 km par trajet sauf circonstances particulières."
         action={
           <button
@@ -106,7 +107,7 @@ export function StepFrais({
             onClick={() => maj((d) => void d.adultes[i].frais.vehicules.push(nouveauVehicule()))}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-50 px-3.5 py-2 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
           >
-            <Plus className="size-4" /> Véhicule
+            <Plus aria-hidden className="size-4" /> Véhicule
           </button>
         }
       >
@@ -140,7 +141,7 @@ export function StepFrais({
                       onClick={() => maj((d) => void d.adultes[i].frais.vehicules.splice(k, 1))}
                       className="grid size-8 place-items-center rounded-full text-ink-muted transition hover:bg-rose/10 hover:text-rose"
                     >
-                      <Trash2 className="size-4" />
+                      <Trash2 aria-hidden className="size-4" />
                     </button>
                   </div>
                   <Grid>
@@ -221,7 +222,7 @@ export function StepFrais({
       {/* Repas */}
       <Card
         title="Repas sur le lieu de travail"
-        icon={<UtensilsCrossed className="size-5" />}
+        icon={<UtensilsCrossed aria-hidden className="size-5" />}
         description={`Déductible : prix du repas (plafonné à ${formatEurCents(p.fraisReels.repas.plafond)}) moins ${formatEurCents(p.fraisReels.repas.valeurForfaitaire)} de valeur d'un repas à domicile.`}
         action={<span className="tabular text-sm font-semibold text-brand">{formatEur(r.fraisReels.repas)}</span>}
       >
@@ -248,7 +249,7 @@ export function StepFrais({
       />
 
       {/* Autres */}
-      <Card title="Autres frais professionnels" icon={<Wrench className="size-5" />} description="Uniquement les dépenses non remboursées et justifiables.">
+      <Card title="Autres frais professionnels" icon={<Wrench aria-hidden className="size-5" />} description="Uniquement les dépenses non remboursées et justifiables.">
         <div className="space-y-3">
           <Collapsible title="Matériel informatique et outillage" subtitle={`Amorti sur ${p.fraisReels.dureeAmortissementMateriel} ans au-delà de ${p.fraisReels.seuilAmortissementMateriel} € HT`} badge={r.fraisReels.materiel > 0 ? <Pill>{formatEur(r.fraisReels.materiel)}</Pill> : null}>
             <Grid>
@@ -284,7 +285,7 @@ export function StepFrais({
           </Collapsible>
         </div>
         <div className="mt-4 flex items-center gap-2 text-xs text-ink-muted">
-          <GraduationCap className="size-4" /> Conservez vos justificatifs pendant 3 ans.
+          <GraduationCap aria-hidden className="size-4" /> Conservez vos justificatifs pendant 3 ans.
         </div>
       </Card>
 

@@ -29,7 +29,7 @@ export function BlocDeclaration({ foyer, r }: { foyer: Foyer; r: Resultat }) {
   return (
     <Card
       title="Détail complet et cases de la déclaration"
-      icon={<FileText className="size-5" />}
+      icon={<FileText aria-hidden className="size-5" />}
       description={
         <>
           Chaque montant saisi, la case où le reporter et les étapes du calcul. Numérotation de la déclaration 2026 (revenus 2025)

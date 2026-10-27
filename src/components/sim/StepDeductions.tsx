@@ -30,7 +30,7 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
       {foyer.enfants.length > 0 && (
         <Card
           title="Enfants : garde et scolarité"
-          icon={<Baby className="size-5" />}
+          icon={<Baby aria-hidden className="size-5" />}
           description={`Crédit de ${p.credits.gardeEnfant.taux * 100} % des frais de garde hors domicile des moins de ${p.credits.gardeEnfant.ageMax} ans, réductions forfaitaires pour la scolarité.`}
           action={<Montant v={r.credits.gardeEnfant + r.reductions.scolarite} />}
         >
@@ -66,7 +66,7 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
 
       <Card
         title="Épargne retraite (PER)"
-        icon={<PiggyBank className="size-5" />}
+        icon={<PiggyBank aria-hidden className="size-5" />}
         description="Versements volontaires déductibles du revenu imposable, dans la limite du plafond épargne retraite."
         action={<span className="tabular text-sm font-semibold text-mint">{r.charges.per > 0 ? `− ${formatEur(r.charges.per)} de revenu` : ""}</span>}
       >
@@ -89,7 +89,7 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
 
       <Card
         title="Emploi à domicile"
-        icon={<Home className="size-5" />}
+        icon={<Home aria-hidden className="size-5" />}
         description="Ménage, jardinage, soutien scolaire, garde à domicile : crédit d'impôt de 50 %."
         action={<Montant v={r.credits.emploiDomicile} />}
       >
@@ -111,7 +111,7 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
         </Grid>
       </Card>
 
-      <Card title="Dons" icon={<HandHeart className="size-5" />} description="Réduction d'impôt, dans la limite de 20 % du revenu imposable." action={<Montant v={r.reductions.dons} />}>
+      <Card title="Dons" icon={<HandHeart aria-hidden className="size-5" />} description="Réduction d'impôt, dans la limite de 20 % du revenu imposable." action={<Montant v={r.reductions.dons} />}>
         <Grid>
           <NumberField
             label="Aide aux personnes en difficulté"
@@ -137,7 +137,7 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
         </Grid>
       </Card>
 
-      <Card title="Pensions alimentaires versées" icon={<HandHeart className="size-5" />} description="Déductibles du revenu imposable." action={<span className="tabular text-sm font-semibold text-mint">{r.charges.pensionsAlimentaires > 0 ? `− ${formatEur(r.charges.pensionsAlimentaires)} de revenu` : ""}</span>}>
+      <Card title="Pensions alimentaires versées" icon={<HandHeart aria-hidden className="size-5" />} description="Déductibles du revenu imposable." action={<span className="tabular text-sm font-semibold text-mint">{r.charges.pensionsAlimentaires > 0 ? `− ${formatEur(r.charges.pensionsAlimentaires)} de revenu` : ""}</span>}>
         <div className="space-y-3">
           {foyer.deductions.pensionEnfantsMajeurs.map((v, k) => (
             <div key={k} className="flex items-end gap-2">
@@ -155,7 +155,7 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
                 onClick={() => maj((d) => void d.deductions.pensionEnfantsMajeurs.splice(k, 1))}
                 className="mb-6 grid size-11 place-items-center rounded-xl text-ink-muted transition hover:bg-rose/10 hover:text-rose"
               >
-                <Trash2 className="size-4" />
+                <Trash2 aria-hidden className="size-4" />
               </button>
             </div>
           ))}
@@ -164,7 +164,7 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
             onClick={() => maj((d) => void d.deductions.pensionEnfantsMajeurs.push(0))}
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand"
           >
-            <Plus className="size-4" /> Pension à un enfant majeur
+            <Plus aria-hidden className="size-4" /> Pension à un enfant majeur
           </button>
           <NumberField
             label="Pension versée à un ex-conjoint ou un enfant mineur non à charge"
@@ -174,7 +174,7 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
         </div>
       </Card>
 
-      <Card title="Investissement locatif et dépendance" icon={<Building className="size-5" />} description="Dispositifs moins courants.">
+      <Card title="Investissement locatif et dépendance" icon={<Building aria-hidden className="size-5" />} description="Dispositifs moins courants.">
         <div className="space-y-3">
           <Collapsible title="Pinel" subtitle="Réduction annuelle indiquée sur votre attestation" badge={r.reductions.pinel > 0 ? <Pill tone="mint">− {formatEur(r.reductions.pinel)}</Pill> : null}>
             <NumberField label="Réduction annuelle Pinel" value={foyer.reductions.pinelReductionAnnuelle} onChange={(v) => maj((d) => void (d.reductions.pinelReductionAnnuelle = v))} />
@@ -214,13 +214,13 @@ export function StepDeductions({ foyer, maj, resultat }: { foyer: Foyer; maj: Ma
                     onClick={() => maj((d) => void d.reductions.ehpad.splice(k, 1))}
                     className="grid size-11 place-items-center rounded-xl text-ink-muted transition hover:bg-rose/10 hover:text-rose"
                   >
-                    <Trash2 className="size-4" />
+                    <Trash2 aria-hidden className="size-4" />
                   </button>
                 </div>
               ))}
               {foyer.reductions.ehpad.length < (couple ? 2 : 1) && (
                 <button type="button" onClick={() => maj((d) => void d.reductions.ehpad.push(0))} className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
-                  <Plus className="size-4" /> Ajouter une personne hébergée
+                  <Plus aria-hidden className="size-4" /> Ajouter une personne hébergée
                 </button>
               )}
             </div>

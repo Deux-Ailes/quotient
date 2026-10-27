@@ -12,8 +12,9 @@ export function StepFoyer({ foyer, maj }: { foyer: Foyer; maj: Maj }) {
 
   return (
     <div className="space-y-5">
-      <Card title="Situation familiale" icon={<Heart className="size-5" />} description="Au 31 décembre de l'année des revenus.">
+      <Card title="Situation familiale" icon={<Heart aria-hidden className="size-5" />} description="Au 31 décembre de l'année des revenus.">
         <Segmented
+          ariaLabel="Situation familiale"
           value={foyer.situation}
           onChange={(v) => maj((d) => void (d.situation = v))}
           options={[
@@ -42,7 +43,7 @@ export function StepFoyer({ foyer, maj }: { foyer: Foyer; maj: Maj }) {
         )}
       </Card>
 
-      <Card title={couple ? "Les déclarants" : "Le déclarant"} icon={<User className="size-5" />}>
+      <Card title={couple ? "Les déclarants" : "Le déclarant"} icon={<User aria-hidden className="size-5" />}>
         <div className={`grid gap-6 ${couple ? "md:grid-cols-2" : ""}`}>
           {adultes.map((a, i) => (
             <div key={i} className="space-y-3 rounded-2xl bg-canvas/60 p-4 ring-1 ring-line">
@@ -66,7 +67,7 @@ export function StepFoyer({ foyer, maj }: { foyer: Foyer; maj: Maj }) {
 
       <Card
         title="Enfants à charge"
-        icon={<Baby className="size-5" />}
+        icon={<Baby aria-hidden className="size-5" />}
         description="Enfants mineurs, ou majeurs rattachés à votre foyer fiscal."
         action={
           <button
@@ -74,7 +75,7 @@ export function StepFoyer({ foyer, maj }: { foyer: Foyer; maj: Maj }) {
             onClick={() => maj((d) => void d.enfants.push(nouvelEnfant(`Enfant ${d.enfants.length + 1}`)))}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-50 px-3.5 py-2 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
           >
-            <Plus className="size-4" /> Ajouter
+            <Plus aria-hidden className="size-4" /> Ajouter
           </button>
         }
       >
@@ -92,7 +93,7 @@ export function StepFoyer({ foyer, maj }: { foyer: Foyer; maj: Maj }) {
                     onClick={() => maj((d) => void d.enfants.splice(i, 1))}
                     className="grid size-8 place-items-center rounded-full text-ink-muted transition hover:bg-rose/10 hover:text-rose"
                   >
-                    <Trash2 className="size-4" />
+                    <Trash2 aria-hidden className="size-4" />
                   </button>
                 </div>
                 <Grid>

@@ -60,7 +60,12 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_THEME }} />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <a href="#contenu" className="lien-evitement">
+          Aller au contenu
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

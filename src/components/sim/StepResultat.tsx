@@ -112,12 +112,12 @@ export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer;
         <div className="absolute -top-20 -right-16 size-64 rounded-full bg-white/10 blur-2xl" />
         <div className="relative flex flex-wrap items-start justify-between gap-6">
           <div>
-            <p className="text-sm text-white/70">{restitution ? "Remboursement estimé" : "Impôt sur le revenu estimé"}</p>
+            <p className="text-sm text-white/90">{restitution ? "Remboursement estimé" : "Impôt sur le revenu estimé"}</p>
             <p className="tabular mt-1 font-display text-5xl font-bold tracking-tight sm:text-6xl">
               <AnimatedNumber value={Math.abs(r.impotNet)} format={formatEur} />
             </p>
             {r.prelevementsSociaux > 0 && (
-              <p className="mt-2 text-sm text-white/80">
+              <p className="mt-2 text-sm text-white/90">
                 + {formatEur(r.prelevementsSociaux)} de prélèvements sociaux, soit {formatEur(r.totalAPayer)} au total
               </p>
             )}
@@ -130,7 +130,7 @@ export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer;
               { l: "Revenu fiscal de réf.", v: formatEur(r.revenuFiscalReference) },
             ].map((x) => (
               <div key={x.l} className="rounded-2xl bg-white/10 px-4 py-3 ring-1 ring-white/15 backdrop-blur">
-                <p className="text-white/60">{x.l}</p>
+                <p className="text-white/90">{x.l}</p>
                 <p className="tabular font-semibold">{x.v}</p>
               </div>
             ))}
@@ -138,7 +138,7 @@ export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer;
         </div>
         {r.params.provisoire && (
           <p className="relative mt-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs">
-            <AlertTriangle className="size-3.5" /> Estimation provisoire : barème du projet de loi de finances 2027
+            <AlertTriangle aria-hidden className="size-3.5" /> Estimation provisoire : barème du projet de loi de finances 2027
           </p>
         )}
       </section>
@@ -155,7 +155,7 @@ export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer;
 
       {/* Frais réels */}
       {reels.length > 0 && (
-        <Card title="Abattement ou frais réels" icon={<Sparkles className="size-5" />}>
+        <Card title="Abattement ou frais réels" icon={<Sparkles aria-hidden className="size-5" />}>
           <div className={`grid gap-3 ${reels.length > 1 ? "sm:grid-cols-2" : ""}`}>
             {reels.map((a) => (
               <div key={a.prenom} className="rounded-2xl bg-canvas/60 p-4 ring-1 ring-line">
@@ -201,7 +201,7 @@ export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer;
       </Card>
 
       {/* PAS */}
-      <Card title="Prélèvement à la source" icon={<CalendarClock className="size-5" />} description="Estimation du taux appliqué à partir de septembre suivant la déclaration.">
+      <Card title="Prélèvement à la source" icon={<CalendarClock aria-hidden className="size-5" />} description="Estimation du taux appliqué à partir de septembre suivant la déclaration.">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-2xl bg-canvas/60 p-4 ring-1 ring-line">
             <p className="text-sm text-ink-soft">Taux du foyer</p>
@@ -250,7 +250,7 @@ export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer;
           onClick={() => window.print()}
           className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-canvas transition hover:bg-brand hover:text-white"
         >
-          <Printer className="size-4" /> Imprimer le récapitulatif
+          <Printer aria-hidden className="size-4" /> Imprimer le récapitulatif
         </button>
         {confirmer ? (
           <div role="alert" className="flex flex-wrap items-center gap-3 rounded-full border border-rose/40 bg-surface py-1.5 pr-1.5 pl-4 text-sm">
@@ -277,7 +277,7 @@ export function StepResultat({ r, foyer, onReset }: { r: Resultat; foyer: Foyer;
             onClick={() => setConfirmer(true)}
             className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-ink-soft transition hover:border-rose hover:text-rose active:scale-[0.98]"
           >
-            <RotateCcw className="size-4" /> Nouvelle simulation
+            <RotateCcw aria-hidden className="size-4" /> Nouvelle simulation
           </button>
         )}
       </div>

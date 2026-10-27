@@ -12,7 +12,7 @@ export default function PageIntrouvable() {
   return (
     <>
       <SiteHeader cta="Lancer ma simulation" />
-      <main className="bg-mesh">
+      <main id="contenu" tabIndex={-1} className="bg-mesh outline-none">
         <div className="mx-auto max-w-3xl px-4 py-28 sm:px-6">
           <p className="font-display text-7xl font-bold text-brand">404</p>
           <h1 className="mt-4 font-display text-4xl font-bold tracking-tight">Cette page n&apos;existe pas.</h1>
@@ -23,7 +23,7 @@ export default function PageIntrouvable() {
               className="bg-brand-gradient group inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lift transition hover:-translate-y-0.5 active:scale-[0.98]"
             >
               Lancer ma simulation
-              <ArrowRight className="size-5 transition group-hover:translate-x-1" weight="bold" />
+              <ArrowRight aria-hidden className="size-5 transition group-hover:translate-x-1" weight="bold" />
             </Link>
             <Link href="/" className="font-semibold text-ink-soft transition hover:text-brand">
               Retour à l&apos;accueil

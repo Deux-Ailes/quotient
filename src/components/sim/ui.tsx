@@ -39,6 +39,7 @@ export function NumberField({ label, value, onChange, suffix = "€", hint, min 
           step={step}
           placeholder={placeholder}
           value={texte}
+          aria-describedby={[suffix && `${id}-unite`, hint && `${id}-aide`].filter(Boolean).join(" ") || undefined}
           onChange={(e) => {
             setTexte(e.target.value);
             const n = parseFloat(e.target.value);
@@ -47,10 +48,16 @@ export function NumberField({ label, value, onChange, suffix = "€", hint, min 
           className="tabular h-11 w-full rounded-xl border border-line bg-surface px-3.5 pr-12 text-[15px] text-ink transition outline-none placeholder:text-ink-muted/70 hover:border-brand-100 focus:border-brand focus:ring-4 focus:ring-brand/10"
         />
         {suffix && (
-          <span className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-ink-muted">{suffix}</span>
+          <span id={`${id}-unite`} className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-ink-muted">
+            {suffix}
+          </span>
         )}
       </div>
-      {hint && <p className="text-xs leading-relaxed text-ink-muted">{hint}</p>}
+      {hint && (
+        <p id={`${id}-aide`} className="text-xs leading-relaxed text-ink-muted">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
@@ -96,6 +103,7 @@ export function SelectField<T extends string>({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value as T)}
+          aria-describedby={hint ? `${id}-aide` : undefined}
           className="h-11 w-full appearance-none rounded-xl border border-line bg-surface px-3.5 pr-10 text-[15px] outline-none transition hover:border-brand-100 focus:border-brand focus:ring-4 focus:ring-brand/10"
         >
           {options.map((o) => (
@@ -104,9 +112,13 @@ export function SelectField<T extends string>({
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted" />
+        <ChevronDown aria-hidden className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-muted" />
       </div>
-      {hint && <p className="text-xs leading-relaxed text-ink-muted">{hint}</p>}
+      {hint && (
+        <p id={`${id}-aide`} className="text-xs leading-relaxed text-ink-muted">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
@@ -116,19 +128,43 @@ export function Segmented<T extends string | number>({
   onChange,
   options,
   label,
+  ariaLabel,
   size = "md",
 }: {
   value: T;
   onChange: (v: T) => void;
   options: { value: T; label: ReactNode }[];
   label?: string;
+  /** Nom du groupe pour les lecteurs d'écran quand aucun libellé n'est affiché. */
+  ariaLabel?: string;
   size?: "sm" | "md";
 }) {
+  const id = useId();
+  const groupe = useRef<HTMLDivElement>(null);
+  // Groupe de boutons radio : une seule tabulation, les flèches changent d'option (motif ARIA radiogroup).
+  const deplacer = (e: React.KeyboardEvent, k: number) => {
+    const sens = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (!sens) return;
+    e.preventDefault();
+    const n = (k + sens + options.length) % options.length;
+    onChange(options[n].value);
+    groupe.current?.querySelectorAll<HTMLButtonElement>("[role=radio]")[n]?.focus();
+  };
   return (
     <div className="space-y-1.5">
-      {label && <p className="text-sm font-medium text-ink">{label}</p>}
-      <div role="radiogroup" className="inline-flex w-full flex-wrap gap-1 rounded-2xl bg-canvas p-1 ring-1 ring-line sm:w-auto">
-        {options.map((o) => {
+      {label && (
+        <p id={`${id}-libelle`} className="text-sm font-medium text-ink">
+          {label}
+        </p>
+      )}
+      <div
+        ref={groupe}
+        role="radiogroup"
+        aria-labelledby={label ? `${id}-libelle` : undefined}
+        aria-label={label ? undefined : ariaLabel}
+        className="inline-flex w-full flex-wrap gap-1 rounded-2xl bg-canvas p-1 ring-1 ring-line sm:w-auto"
+      >
+        {options.map((o, k) => {
           const actif = o.value === value;
           return (
             <button
@@ -136,7 +172,9 @@ export function Segmented<T extends string | number>({
               type="button"
               role="radio"
               aria-checked={actif}
+              tabIndex={actif ? 0 : -1}
               onClick={() => onChange(o.value)}
+              onKeyDown={(e) => deplacer(e, k)}
               className={`flex-1 rounded-xl font-medium whitespace-nowrap transition sm:flex-none ${
                 size === "sm" ? "px-3 py-1.5 text-sm" : "px-4 py-2 text-sm"
               } ${actif ? "bg-surface text-ink shadow-card ring-1 ring-line" : "text-ink-soft hover:text-ink"}`}
@@ -156,7 +194,7 @@ export function Switch({ checked, onChange, label, hint }: { checked: boolean; o
     <label htmlFor={id} className="flex cursor-pointer items-start gap-3 rounded-xl py-1">
       <span className="relative mt-0.5 inline-flex shrink-0">
         <input id={id} type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
-        <span className="h-6 w-10 rounded-full bg-line transition peer-checked:bg-brand peer-focus-visible:ring-4 peer-focus-visible:ring-brand/20" />
+        <span className="h-6 w-10 rounded-full bg-line transition peer-checked:bg-brand peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand" />
         <span className="absolute top-0.5 left-0.5 size-5 rounded-full bg-surface shadow transition peer-checked:translate-x-4" />
       </span>
       <span>
@@ -211,7 +249,7 @@ export function Collapsible({ title, subtitle, children, defaultOpen = false, ba
           </span>
           {subtitle && <span className="mt-0.5 block text-xs text-ink-muted">{subtitle}</span>}
         </span>
-        <ChevronDown className={`size-4 shrink-0 text-ink-muted transition ${open ? "rotate-180" : ""}`} />
+        <ChevronDown aria-hidden className={`size-4 shrink-0 text-ink-muted transition ${open ? "rotate-180" : ""}`} />
       </button>
       {open && <div className="border-t border-line px-4 py-4">{children}</div>}
     </div>
@@ -231,7 +269,7 @@ export function Note({ children, tone = "info" }: { children: ReactNode; tone?: 
   const iconColor = { info: "text-brand", warn: "text-amber", success: "text-mint" }[tone];
   return (
     <div className={`flex gap-2.5 rounded-xl px-3.5 py-3 text-xs leading-relaxed ${styles}`}>
-      <Info className={`mt-px size-4 shrink-0 ${iconColor}`} />
+      <Info aria-hidden className={`mt-px size-4 shrink-0 ${iconColor}`} />
       <div>{children}</div>
     </div>
   );

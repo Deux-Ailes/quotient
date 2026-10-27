@@ -21,7 +21,7 @@ export default function PageGuides() {
   return (
     <>
       <SiteHeader cta="Lancer ma simulation" />
-      <main>
+      <main id="contenu" tabIndex={-1} className="outline-none">
         <header className="bg-mesh border-b border-line">
           <div className="mx-auto max-w-4xl px-4 pt-14 pb-12 sm:px-6">
             <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">Guides pratiques</h1>
@@ -45,7 +45,7 @@ export default function PageGuides() {
                       Mis à jour le {formatDate(g.misAJour)} · {g.lecture} min de lecture
                     </p>
                   </div>
-                  <ArrowRight className="size-6 shrink-0 text-brand transition group-hover:translate-x-1" weight="bold" />
+                  <ArrowRight aria-hidden className="size-6 shrink-0 text-brand transition group-hover:translate-x-1" weight="bold" />
                 </Link>
               </li>
             ))}

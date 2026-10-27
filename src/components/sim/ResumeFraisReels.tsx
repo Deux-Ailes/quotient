@@ -29,9 +29,9 @@ function BlocTexte({ titre, texte }: { titre: string; texte: string }) {
           <button
             type="button"
             onClick={copier}
-            className="inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600 active:scale-[0.98] print:hidden"
+            className="inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-on-accent transition hover:bg-brand-600 active:scale-[0.98] print:hidden"
           >
-            {copie === "ok" ? <Check className="size-4" weight="bold" /> : <Copy className="size-4" weight="bold" />}
+            {copie === "ok" ? <Check aria-hidden className="size-4" weight="bold" /> : <Copy aria-hidden className="size-4" weight="bold" />}
             {copie === "ok" ? "Copié" : "Copier le texte"}
           </button>
         </div>
@@ -65,7 +65,7 @@ export function ResumeFraisReels({ foyer, r }: { foyer: Foyer; r: Resultat }) {
   return (
     <Card
       title="Justificatif des frais réels"
-      icon={<ClipboardText className="size-5" />}
+      icon={<ClipboardText aria-hidden className="size-5" />}
       description="Texte prêt à coller dans la zone « Précisions » de la case frais réels, sur la déclaration en ligne. Chaque montant y est justifié par son calcul."
     >
       <div className="space-y-4">

@@ -51,7 +51,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       title={libelle}
       className={`grid size-9 shrink-0 place-items-center rounded-full bg-surface text-ink-soft ring-1 ring-line transition hover:text-brand hover:ring-brand-100 active:scale-95 ${className}`}
     >
-      {sombre === null ? <span className="size-[18px]" /> : sombre ? <Sun className="size-[18px]" weight="bold" /> : <Moon className="size-[18px]" weight="bold" />}
+      {sombre === null ? <span className="size-[18px]" /> : sombre ? <Sun aria-hidden className="size-[18px]" weight="bold" /> : <Moon aria-hidden className="size-[18px]" weight="bold" />}
     </button>
   );
 }

@@ -29,11 +29,13 @@
   --color-brand-50: #f0eeff;
   --color-brand-100: #e2ddff;
   --color-violet: #a855f7;
-  --color-mint: #0f9f6e;
+  --color-mint: #047857;
   --color-mint-50: #e8faf3;
-  --color-amber: #b7700a;
+  --color-amber: #9a5b06;
   --color-amber-50: #fff7e6;
   --color-rose: #e11d48;
+  /* Texte posé sur un fond brand ou mint plein : blanc en clair, sombre en mode sombre (contraste AA). */
+  --color-on-accent: #ffffff;
 
   --shadow-card: 0 1px 2px rgb(13 15 43 / 0.04), 0 8px 24px -12px rgb(13 15 43 / 0.12);
   --shadow-lift: 0 2px 4px rgb(13 15 43 / 0.04), 0 24px 48px -20px rgb(91 71 255 / 0.35);
@@ -74,6 +76,7 @@
   --color-amber: #fbbf24;
   --color-amber-50: #2a2112;
   --color-rose: #fb7185;
+  --color-on-accent: #0a0b1c;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
   --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -20px rgb(91 71 255 / 0.35);
 }
@@ -121,7 +124,7 @@ h3 {
 }
 
 .bg-brand-gradient {
-  background: linear-gradient(120deg, #5b47ff 0%, #7c4dff 45%, #a855f7 100%);
+  background: linear-gradient(120deg, #5b47ff 0%, #6c3ff0 45%, #7e22ce 100%);
 }
 
 .bg-mesh {
@@ -252,4 +255,33 @@ input[type="number"] {
   font-size: 0.85rem;
   line-height: 1.65;
   color: var(--color-ink);
+}
+
+/* Focus clavier visible partout ; les champs de saisie gardent leur propre style (bordure et halo). */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+.bg-night :focus-visible,
+.bg-brand-gradient:focus-visible {
+  outline-color: #c4bbff;
+}
+
+/* Lien d'évitement : masqué jusqu'au focus clavier. */
+.lien-evitement {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  border-radius: 9999px;
+  background: var(--color-surface);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  box-shadow: var(--shadow-lift);
+}
+.lien-evitement:focus {
+  transform: none;
 }

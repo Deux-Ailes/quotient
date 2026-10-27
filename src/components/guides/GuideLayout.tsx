@@ -25,7 +25,7 @@ export function EncartSimulateur({ titre, texte, lien = "/simulateur/" }: { titr
         className="bg-brand-gradient group inline-flex shrink-0 items-center gap-2 self-start rounded-full px-6 py-3 font-semibold whitespace-nowrap text-white shadow-lift transition hover:-translate-y-0.5 active:scale-[0.98] sm:self-auto"
       >
         {CTA}
-        <ArrowRight className="size-4 transition group-hover:translate-x-1" weight="bold" />
+        <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-1" weight="bold" />
       </Link>
     </aside>
   );
@@ -69,7 +69,7 @@ export function GuideLayout({ guide: g, intro, sources, children }: { guide: Gui
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(donneesStructurees(g)) }} />
       <SiteHeader cta={CTA} />
-      <main>
+      <main id="contenu" tabIndex={-1} className="outline-none">
         <header className="bg-mesh border-b border-line">
           <div className="mx-auto max-w-3xl px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
             <nav aria-label="Fil d'Ariane" className="text-sm text-ink-muted">
@@ -91,10 +91,10 @@ export function GuideLayout({ guide: g, intro, sources, children }: { guide: Gui
             <div className="mt-5 text-lg leading-relaxed text-ink-soft">{intro}</div>
             <p className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-muted">
               <span className="inline-flex items-center gap-1.5">
-                <CalendarBlank className="size-4" /> Mis à jour le <time dateTime={g.misAJour}>{formatDate(g.misAJour)}</time>
+                <CalendarBlank aria-hidden className="size-4" /> Mis à jour le <time dateTime={g.misAJour}>{formatDate(g.misAJour)}</time>
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <Clock className="size-4" /> {g.lecture} min de lecture
+                <Clock aria-hidden className="size-4" /> {g.lecture} min de lecture
               </span>
             </p>
           </div>

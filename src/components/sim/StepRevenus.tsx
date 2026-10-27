@@ -21,6 +21,7 @@ export function AdultTabs({ foyer, actif, onChange }: { foyer: Foyer; actif: num
   if (foyer.situation !== "couple") return null;
   return (
     <Segmented
+      ariaLabel="Déclarant affiché"
       value={actif}
       onChange={onChange}
       options={foyer.adultes.map((a, i) => ({ value: i, label: a.prenom || `Déclarant ${i + 1}` }))}
@@ -39,7 +40,7 @@ export function StepRevenus({ foyer, maj, actif, setActif }: { foyer: Foyer; maj
 
       <Card
         title={`Revenus de ${a.prenom || `Déclarant ${i + 1}`}`}
-        icon={<Briefcase className="size-5" />}
+        icon={<Briefcase aria-hidden className="size-5" />}
         description="Montants annuels nets imposables, tels qu'ils figurent sur vos bulletins de décembre ou attestations."
       >
         <Grid>
@@ -93,9 +94,10 @@ export function StepRevenus({ foyer, maj, actif, setActif }: { foyer: Foyer; maj
         </div>
       </Card>
 
-      <Card title="Revenus fonciers" icon={<Building2 className="size-5" />} description="Loyers de locations vides, pour l'ensemble du foyer.">
+      <Card title="Revenus fonciers" icon={<Building2 aria-hidden className="size-5" />} description="Loyers de locations vides, pour l'ensemble du foyer.">
         <Segmented
           size="sm"
+          ariaLabel="Régime des revenus fonciers"
           value={foyer.foncier.regime}
           onChange={(v) => maj((d) => void (d.foncier.regime = v))}
           options={[
@@ -123,7 +125,7 @@ export function StepRevenus({ foyer, maj, actif, setActif }: { foyer: Foyer; maj
         </div>
       </Card>
 
-      <Card title="Placements financiers" icon={<LineChart className="size-5" />} description="Dividendes et intérêts hors PEA, livrets réglementés et assurance-vie.">
+      <Card title="Placements financiers" icon={<LineChart aria-hidden className="size-5" />} description="Dividendes et intérêts hors PEA, livrets réglementés et assurance-vie.">
         <Grid>
           <NumberField label="Dividendes bruts" value={foyer.capitaux.dividendes} onChange={(v) => maj((d) => void (d.capitaux.dividendes = v))} />
           <NumberField label="Intérêts (comptes à terme, obligations…)" value={foyer.capitaux.interets} onChange={(v) => maj((d) => void (d.capitaux.interets = v))} />

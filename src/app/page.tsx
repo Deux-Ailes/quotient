@@ -86,7 +86,7 @@ function BoutonPrincipal({ className = "" }: { className?: string }) {
       className={`bg-brand-gradient group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-base font-semibold whitespace-nowrap text-white shadow-lift transition hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${className}`}
     >
       {CTA}
-      <ArrowRight className="size-5 transition group-hover:translate-x-1" weight="bold" />
+      <ArrowRight aria-hidden className="size-5 transition group-hover:translate-x-1" weight="bold" />
     </Link>
   );
 }
@@ -143,13 +143,13 @@ export default function LandingPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(donneesStructurees()) }} />
       <SiteHeader cta={CTA} />
-      <main>
+      <main id="contenu" tabIndex={-1} className="outline-none">
         {/* Hero */}
         <section className="bg-mesh relative overflow-hidden">
           <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:pt-20">
             <div className="animate-fade-up">
               <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-surface/70 px-3 py-1 text-xs font-semibold text-brand">
-                <Sparkle className="size-3.5" weight="fill" />
+                <Sparkle aria-hidden className="size-3.5" weight="fill" />
                 {params.libelle}
                 {params.provisoire && <span className="font-medium text-ink-muted">· barème provisoire</span>}
               </span>
@@ -166,7 +166,7 @@ export default function LandingPage() {
               <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
                 <BoutonPrincipal />
                 <Link href="/simulateur?exemple" className="inline-flex items-center gap-1.5 font-semibold text-ink-soft transition hover:text-brand">
-                  Voir un exemple <ArrowRight className="size-4" />
+                  Voir un exemple <ArrowRight aria-hidden className="size-4" />
                 </Link>
               </div>
             </div>
@@ -225,12 +225,12 @@ export default function LandingPage() {
           <ul className="mx-auto flex max-w-6xl flex-col gap-x-8 gap-y-3 px-4 py-6 text-sm text-ink-soft sm:flex-row sm:flex-wrap sm:px-6">
             {POINTS.map((t) => (
               <li key={t} className="flex items-center gap-2 whitespace-nowrap">
-                <Check className="size-4 shrink-0 text-mint" weight="bold" />
+                <Check aria-hidden className="size-4 shrink-0 text-mint" weight="bold" />
                 {t}
               </li>
             ))}
             <li className="flex items-center gap-2 whitespace-nowrap xl:ml-auto">
-              <LockSimple className="size-4 shrink-0 text-brand" weight="bold" />
+              <LockSimple aria-hidden className="size-4 shrink-0 text-brand" weight="bold" />
               Gratuit, sans compte, 100 % local
             </li>
           </ul>
@@ -289,7 +289,7 @@ export default function LandingPage() {
             <div className="mt-12 grid gap-4 lg:grid-cols-6">
               {/* Frais kilométriques */}
               <article className="rounded-3xl bg-brand-50 p-7 lg:col-span-3 lg:row-span-2">
-                <Car className="size-7 text-brand" />
+                <Car aria-hidden className="size-7 text-brand" />
                 <h3 className="mt-4 text-xl font-semibold">Frais kilométriques</h3>
                 <p className="mt-2 max-w-md text-ink-soft">
                   Barème officiel voitures, motos et cyclomoteurs, +20 % pour l&apos;électrique, plafond de 40 km par trajet.
@@ -315,7 +315,7 @@ export default function LandingPage() {
               <article className="rounded-3xl border border-line p-7 lg:col-span-3">
                 <div className="flex items-start justify-between gap-6">
                   <div>
-                    <Laptop className="size-7 text-brand" />
+                    <Laptop aria-hidden className="size-7 text-brand" />
                     <h3 className="mt-4 text-xl font-semibold">Télétravail</h3>
                     <p className="mt-2 max-w-sm text-ink-soft">Forfait journalier, ou loyer et énergies au prorata de la surface du bureau et des jours télétravaillés.</p>
                   </div>
@@ -330,7 +330,7 @@ export default function LandingPage() {
               <article className="rounded-3xl border border-line p-7 lg:col-span-3">
                 <div className="flex items-start justify-between gap-6">
                   <div>
-                    <Users className="size-7 text-brand" />
+                    <Users aria-hidden className="size-7 text-brand" />
                     <h3 className="mt-4 text-xl font-semibold">Quotient familial</h3>
                     <p className="mt-2 max-w-sm text-ink-soft">Parts, garde alternée, parent isolé, invalidité, avec le plafonnement de l&apos;avantage.</p>
                   </div>
@@ -345,7 +345,7 @@ export default function LandingPage() {
             <ul className="mt-10 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
               {AUTRES.map(({ icon: Icon, titre, texte }) => (
                 <li key={titre} className="flex gap-4">
-                  <Icon className="mt-0.5 size-6 shrink-0 text-brand" />
+                  <Icon aria-hidden className="mt-0.5 size-6 shrink-0 text-brand" />
                   <div>
                     <p className="font-semibold">{titre}</p>
                     <p className="mt-1 text-sm leading-relaxed text-ink-soft">{texte}</p>
@@ -369,7 +369,7 @@ export default function LandingPage() {
                 href="/simulateur"
                 className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-night transition hover:bg-brand-100 active:scale-[0.98]"
               >
-                {CTA} <ArrowRight className="size-4" weight="bold" />
+                {CTA} <ArrowRight aria-hidden className="size-4" weight="bold" />
               </Link>
             </div>
             <div className="space-y-3">
@@ -380,7 +380,7 @@ export default function LandingPage() {
               ].map(({ icon: Icon, label, detail, v }) => (
                 <div key={label} className="flex items-center gap-4 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
                   <span className="grid size-10 place-items-center rounded-xl bg-white/10">
-                    <Icon className="size-5" />
+                    <Icon aria-hidden className="size-5" />
                   </span>
                   <div className="flex-1">
                     <p className="font-medium">{label}</p>
@@ -391,7 +391,7 @@ export default function LandingPage() {
               ))}
               <div className="flex items-center justify-between rounded-2xl bg-white p-4 text-night">
                 <div className="flex items-center gap-3">
-                  <Scales className="size-5 text-[#5b47ff]" />
+                  <Scales aria-hidden className="size-5 text-[#5b47ff]" />
                   <span className="font-medium">Frais réels vs 10 %</span>
                 </div>
                 <p className="tabular font-semibold">
@@ -411,7 +411,7 @@ export default function LandingPage() {
               { icon: ChartLine, t: "Sources officielles", d: "Barèmes issus de la loi de finances, du BOFiP et de Service-Public." },
             ].map(({ icon: Icon, t, d }) => (
               <div key={t} className="flex gap-4">
-                <Icon className="mt-0.5 size-6 shrink-0 text-brand" />
+                <Icon aria-hidden className="mt-0.5 size-6 shrink-0 text-brand" />
                 <div>
                   <p className="font-semibold">{t}</p>
                   <p className="mt-1 text-sm text-ink-soft">{d}</p>
@@ -426,7 +426,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-display text-4xl font-bold tracking-tight">Guides pratiques</h2>
             <Link href="/guides/" className="inline-flex items-center gap-1.5 font-semibold text-brand transition-all hover:gap-2.5">
-              Tous les guides <ArrowRight className="size-4" />
+              Tous les guides <ArrowRight aria-hidden className="size-4" />
             </Link>
           </div>
           <ul className="mt-8 divide-y divide-line border-y border-line">
@@ -435,7 +435,7 @@ export default function LandingPage() {
                 <Link href={`/guides/${g.slug}/`} className="group grid gap-2 py-6 md:grid-cols-[1fr_1.4fr_auto] md:items-center md:gap-8">
                   <span className="font-semibold group-hover:text-brand">{g.titre}</span>
                   <span className="text-sm leading-relaxed text-ink-soft">{g.resume}</span>
-                  <ArrowRight className="hidden size-5 text-brand transition group-hover:translate-x-1 md:block" weight="bold" />
+                  <ArrowRight aria-hidden className="hidden size-5 text-brand transition group-hover:translate-x-1 md:block" weight="bold" />
                 </Link>
               </li>
             ))}
@@ -451,7 +451,7 @@ export default function LandingPage() {
                 <details key={q} className="group px-6 py-5 [&_summary::-webkit-details-marker]:hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
                     {q}
-                    <CaretDown className="size-5 shrink-0 text-ink-muted transition group-open:rotate-180" />
+                    <CaretDown aria-hidden className="size-5 shrink-0 text-ink-muted transition group-open:rotate-180" />
                   </summary>
                   <p className="mt-3 leading-relaxed text-ink-soft">{r}</p>
                 </details>
